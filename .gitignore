@@ -2,3 +2,4 @@ data/
 .venv
 .env
 experiments.ipynb
+project_notes.txt
