@@ -13,8 +13,18 @@ To ensure maximum factual accuracy, precision, and traceability, the architectur
 * **Re-Ranker (Cross-Encoder):** Secondary evaluation step for retrieved text and image chunks prior to passing them to the synthesis LLM, ensuring only the most relevant context reaches the prompt.
 * **Grounded Generation & Strict Citations:** The synthesis model is strictly constrained to generate responses solely based on provided source chunks and to cite every statement with exact references.
 
+## Document Ingestion & Extraction Engine: PyMuPDF
+
+We chose **PyMuPDF** over heavy extractors like `UnstructuredPDFLoader` for the data extraction pipeline:
+
+* **Lightning-Fast & Lightweight:** Built on the native C-based MuPDF library, significantly reducing CPU/RAM overhead and processing time.
+* **Native Markdown Table Extraction:** Leverages built-in table detection (`page.find_tables()`) to convert complex technical tables directly into Markdown, preserving structural integrity for the LLM.
+* **Layout Control & Deduplication:** Bounding-box matching avoids redundant text extraction by skipping narrative blocks overlapping with detected tables.
+* **Zero External Dependencies:** Runs pure Python (`pip install pymupdf`) without requiring system-level packages like `poppler-utils` or `tesseract-ocr`, streamlining Docker and Cloud deployments.
+
 ## Tech Stack & Architecture
 
+* **Parsing & Extraction:** PyMuPDF
 * **Retrieval:** Elasticsearch (Hybrid Search: Dense Vector + BM25)
 * **Processing:** Multimodal Chunking & Layout Analysis
 * **Quality Gate:** Re-Ranker (Cross-Encoder) for context optimization
