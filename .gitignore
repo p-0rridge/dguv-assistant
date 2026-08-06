@@ -1,0 +1,4 @@
+data/
+.venv
+.env
+experiments.ipynb
