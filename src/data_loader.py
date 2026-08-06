@@ -33,15 +33,11 @@ class PDFDocumentLoader:
 if __name__ == "__main__":
 
     BASE_DIR = Path(__file__).resolve().parent.parent
-    """for this quick demo we only load the data from 'HR policies' ---> 3 documents"""
     subset_dir = (
         BASE_DIR
-        / "documents"
-        / "documents"
-        / "documents"
-        / "internal_docs_by_area"
-        / "HR_policies"
+        / "data/"
     )
 
     loader = PDFDocumentLoader()
     docs = loader.load_directory(subset_dir)
+    print(type(docs))
