@@ -40,4 +40,3 @@ if __name__ == "__main__":
 
     loader = PDFDocumentLoader()
     docs = loader.load_directory(subset_dir)
-    print(type(docs))
