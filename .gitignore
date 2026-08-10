@@ -7,5 +7,9 @@ project_notes/
 data_preprocessing_with_elasticsearch_and_docker.py
 chroma_db/
 extracted_images/
-artifacts/
 images/
+artifacts/*
+!artifacts/goldset.json
+!artifacts/unanswerable.json
+!artifacts/results/
+presentations/

@@ -1,0 +1,257 @@
+{
+  "config": {
+    "name": "mvp_baseline",
+    "top_k": 5,
+    "candidate_k": 20,
+    "use_bm25": false,
+    "use_reranker": false
+  },
+  "retriever": "dense",
+  "goldset_size": 58,
+  "variants": {
+    "colloquial": {
+      "questions": 58,
+      "recall_at_5": 0.5862068965517241,
+      "recall_at_20": 0.7586206896551724,
+      "mrr": 0.4424668704307329,
+      "ndcg_at_5": 0.4672642622402544,
+      "latency_ms_median": 219.76824998273514,
+      "per_document_recall": {
+        "100-001.pdf": 0.5,
+        "103-011.pdf": 1.0,
+        "103-012.pdf": 0.25,
+        "203-002.pdf": 0.6666666666666666,
+        "203-004.pdf": 0.6666666666666666,
+        "203-005.pdf": 0.6,
+        "203-006.pdf": 0.8,
+        "203-070.pdf": 1.0,
+        "203-071.pdf": 0.3333333333333333,
+        "203-072.pdf": 0.5,
+        "203-077.pdf": 0.6666666666666666,
+        "DGUV Vorschrift 1 „Grundsätze der Prävention“ - vorschrift1.pdf": 0.5,
+        "i-8590.pdf": 0.5,
+        "vorschrift3.pdf": 0.4,
+        "vorschrift3da.pdf": 0.3333333333333333
+      },
+      "misses": [
+        {
+          "id": "gold-002",
+          "question": "Was muss der Chef machen, wenn er die Gefahr nicht selbst sicher beurteilen kann?",
+          "expected": "100-001.pdf p.18",
+          "retrieved": [
+            "100-001.pdf p.75",
+            "100-001.pdf p.42",
+            "100-001.pdf p.75"
+          ]
+        },
+        {
+          "id": "gold-009",
+          "question": "Woran kann sich der Unternehmer bei diesen Regeln orientieren, wenn er seine Arbeitsschutzpflichten erfüllen will?",
+          "expected": "103-012.pdf p.4",
+          "retrieved": [
+            "100-001.pdf p.48",
+            "100-001.pdf p.9",
+            "100-001.pdf p.12"
+          ]
+        },
+        {
+          "id": "gold-010",
+          "question": "Wann dürfen Arbeiten an spannungsführenden Anlagen überhaupt gemacht werden?",
+          "expected": "103-012.pdf p.6",
+          "retrieved": [
+            "vorschrift3.pdf p.8",
+            "103-011.pdf p.23",
+            "i-8590.pdf p.29"
+          ]
+        },
+        {
+          "id": "gold-011",
+          "question": "Wann gilt eine Tätigkeit als Arbeiten unter Spannung?",
+          "expected": "103-012.pdf p.9",
+          "retrieved": [
+            "103-012.pdf p.4",
+            "103-011.pdf p.2",
+            "i-8590.pdf p.39"
+          ]
+        },
+        {
+          "id": "gold-014",
+          "question": "Was muss ich vor dem Loslegen an der Anlage als Erstes machen?",
+          "expected": "203-002.pdf p.21",
+          "retrieved": [
+            "203-071.pdf p.37",
+            "203-072.pdf p.25",
+            "i-8590.pdf p.18"
+          ]
+        },
+        {
+          "id": "gold-019",
+          "question": "Für welche Geräte ist diese Info hier überhaupt gedacht – und für welche nicht?",
+          "expected": "203-005.pdf p.6",
+          "retrieved": [
+            "203-004.pdf p.32",
+            "203-072.pdf p.94",
+            "203-002.pdf p.5"
+          ]
+        },
+        {
+          "id": "gold-021",
+          "question": "Wer darf so ein elektrisches Gerät überhaupt wieder instand setzen?",
+          "expected": "203-005.pdf p.11",
+          "retrieved": [
+            "203-004.pdf p.23",
+            "i-8590.pdf p.26",
+            "203-002.pdf p.18"
+          ]
+        },
+        {
+          "id": "gold-027",
+          "question": "Welche zusätzliche Schutzmaßnahme kann man hier noch einsetzen, wenn normale Maßnahmen nicht reichen?",
+          "expected": "203-006.pdf p.33",
+          "retrieved": [
+            "203-072.pdf p.112",
+            "203-004.pdf p.15",
+            "100-001.pdf p.74"
+          ]
+        },
+        {
+          "id": "gold-035",
+          "question": "Wer muss die Messungen machen, und wer bestätigt vorher, dass die Person dafür taugt?",
+          "expected": "203-071.pdf p.45",
+          "retrieved": [
+            "203-072.pdf p.32",
+            "203-070.pdf p.49",
+            "203-072.pdf p.20"
+          ]
+        },
+        {
+          "id": "gold-036",
+          "question": "Wann muss man beim Prüfen noch extra testen, ob die Schutzteile wirklich richtig arbeiten?",
+          "expected": "203-072.pdf p.11",
+          "retrieved": [
+            "i-8590.pdf p.25",
+            "103-011.pdf p.29",
+            "203-072.pdf p.16"
+          ]
+        },
+        {
+          "id": "gold-044",
+          "question": "Ab wann muss auf einer Baustelle ein extra Raum für die Erstversorgung da sein?",
+          "expected": "DGUV Vorschrift 1 „Grundsätze der Prävention“ - vorschrift1.pdf p.19",
+          "retrieved": [
+            "100-001.pdf p.90",
+            "100-001.pdf p.92",
+            "100-001.pdf p.99"
+          ]
+        },
+        {
+          "id": "gold-047",
+          "question": "Wann gilt eine andere Schutzmaßnahme genauso gut wie die vorgegebenen Regeln?",
+          "expected": "i-8590.pdf p.7",
+          "retrieved": [
+            "103-011.pdf p.29",
+            "203-002.pdf p.23",
+            "203-006.pdf p.16"
+          ]
+        },
+        {
+          "id": "gold-051",
+          "question": "Wer darf die elektrischen Anlagen und Geräte hier überhaupt aufbauen, ändern und warten?",
+          "expected": "vorschrift3.pdf p.4",
+          "retrieved": [
+            "i-8590.pdf p.21",
+            "203-002.pdf p.5",
+            "203-002.pdf p.8"
+          ]
+        },
+        {
+          "id": "gold-052",
+          "question": "Wann darf ich die Anlage überhaupt erst benutzen?",
+          "expected": "vorschrift3.pdf p.5",
+          "retrieved": [
+            "i-8590.pdf p.43",
+            "i-8590.pdf p.4",
+            "203-002.pdf p.19"
+          ]
+        }
+      ]
+    },
+    "precise": {
+      "questions": 58,
+      "recall_at_5": 0.7586206896551724,
+      "recall_at_20": 0.9137931034482759,
+      "mrr": 0.5719149624322039,
+      "ndcg_at_5": 0.6022534945270492,
+      "latency_ms_median": 254.1977500077337,
+      "per_document_recall": {
+        "100-001.pdf": 0.75,
+        "103-011.pdf": 0.75,
+        "103-012.pdf": 0.75,
+        "203-002.pdf": 0.6666666666666666,
+        "203-004.pdf": 0.6666666666666666,
+        "203-005.pdf": 0.8,
+        "203-006.pdf": 0.8,
+        "203-070.pdf": 0.75,
+        "203-071.pdf": 0.6666666666666666,
+        "203-072.pdf": 0.5,
+        "203-077.pdf": 1.0,
+        "DGUV Vorschrift 1 „Grundsätze der Prävention“ - vorschrift1.pdf": 1.0,
+        "i-8590.pdf": 0.75,
+        "vorschrift3.pdf": 0.8,
+        "vorschrift3da.pdf": 0.6666666666666666
+      },
+      "misses": [
+        {
+          "id": "gold-002",
+          "question": "Was ist gemäß Auszug aus DGUV-Dokument 100-001.pdf auf Seite 18 zu tun, wenn dem Unternehmer die Fachkunde zur Bewertung der ermittelten Gefährdungen fehlt?",
+          "expected": "100-001.pdf p.18",
+          "retrieved": [
+            "203-071.pdf p.1",
+            "i-8590.pdf p.1",
+            "103-012.pdf p.1"
+          ]
+        },
+        {
+          "id": "gold-014",
+          "question": "Welche erste Maßnahme ist nach Dokument 203-002.pdf, Abschnitt 5.3.1, vor Beginn der Arbeiten auszuführen?",
+          "expected": "203-002.pdf p.21",
+          "retrieved": [
+            "203-071.pdf p.37",
+            "vorschrift3.pdf p.6",
+            "203-071.pdf p.5"
+          ]
+        },
+        {
+          "id": "gold-021",
+          "question": "Wer ist nach DGUV Information 203-005, Abschnitt 6, zur Instandsetzung elektrischer Betriebsmittel befugt?",
+          "expected": "203-005.pdf p.11",
+          "retrieved": [
+            "203-072.pdf p.6",
+            "203-002.pdf p.5",
+            "203-071.pdf p.5"
+          ]
+        },
+        {
+          "id": "gold-035",
+          "question": "Wer führt nach Dokument 203-071.pdf auf Seite 45 die Prüfungen eigenverantwortlich durch, und welche Anforderung muss die Prüfperson vorab nachweisen?",
+          "expected": "203-071.pdf p.45",
+          "retrieved": [
+            "203-070.pdf p.12",
+            "203-071.pdf p.15",
+            "203-071.pdf p.22"
+          ]
+        },
+        {
+          "id": "gold-048",
+          "question": "Welche Personengruppe kann nach GUV-I 8590, Erläuterungen zu § 2 Abs. 3, die Ausbildung begleiten, wenn eine mehrjährige Tätigkeit zur Qualifikation führen soll?",
+          "expected": "i-8590.pdf p.8",
+          "retrieved": [
+            "203-070.pdf p.14",
+            "103-011.pdf p.11",
+            "103-012.pdf p.12"
+          ]
+        }
+      ]
+    }
+  }
+}

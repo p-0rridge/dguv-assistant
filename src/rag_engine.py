@@ -1,13 +1,12 @@
 # pip install "langchain-openai>=1" "langchain-core>=0.3" python-dotenv
 import os
-from pathlib import Path
 
 from dotenv import find_dotenv, load_dotenv
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
-from data_preprocessing import MultiModalPreprocessor
+from retriever import Retriever
 
 load_dotenv(find_dotenv())
 
@@ -41,19 +40,25 @@ class RAGEngine:
 
     def __init__(
         self,
-        preprocessor: MultiModalPreprocessor,
+        retriever: Retriever,
         openai_api_key: str | None = None,
         model: str = DEFAULT_MODEL,
         temperature: float = 0.0,
         top_k: int = 5,
     ):
+        """
+        retriever: Any Retriever implementation - dense, hybrid, or re-ranked. The engine
+            never touches the vector store directly, so swapping the retrieval strategy
+            leaves answer generation untouched and keeps the comparison honest: only one
+            part of the system changes between measurements.
+        """
         api_key = openai_api_key or os.getenv("OPENAI_API_KEY")
         if not api_key:
             raise ValueError(
                 "No OpenAI API key found. Pass openai_api_key= or set OPENAI_API_KEY in your .env file."
             )
 
-        self.preprocessor = preprocessor
+        self.retriever = retriever
         self.top_k = top_k
 
         self.llm = ChatOpenAI(api_key=api_key, model=model, temperature=temperature)
@@ -67,7 +72,7 @@ class RAGEngine:
 
     def retrieve(self, query: str) -> list[dict]:
         """Fetch the top_k most relevant text/table chunks for the query."""
-        return self.preprocessor.search_text(query, k=self.top_k)
+        return self.retriever.retrieve(query, k=self.top_k)
 
     def build_context(self, chunks: list[dict]) -> str:
         blocks = []
@@ -109,16 +114,21 @@ class RAGEngine:
 
 
 if __name__ == "__main__":
+    import config
+    from data_preprocessing import MultiModalPreprocessor
+    from retriever import build_retriever
 
-    BASE_DIR = Path(__file__).resolve().parent.parent
-    PERSIST_DIR = BASE_DIR / "chroma_db"
+    # Assumes build_index.py has already been run, so the vector store is populated.
+    _, chroma_dir = config.corpus_paths("full")
+    variant = config.MVP_BASELINE
 
-    # Assumes data_preprocessing.py has already been run once against the mock PDF,
-    # so PERSIST_DIR already contains the indexed chunks.
-    preprocessor = MultiModalPreprocessor(persist_dir=PERSIST_DIR)
-    engine = RAGEngine(preprocessor=preprocessor)
+    preprocessor = MultiModalPreprocessor(persist_dir=chroma_dir)
+    engine = RAGEngine(
+        retriever=build_retriever(variant, preprocessor),
+        top_k=variant.top_k,
+    )
 
-    question = "Wie wird der Isolationswiderstand von Rumpfsegmenten geprüft?"
+    question = "In welchen Abständen müssen ortsveränderliche elektrische Betriebsmittel geprüft werden?"
     result = engine.answer(question)
 
     print("Frage:", question)

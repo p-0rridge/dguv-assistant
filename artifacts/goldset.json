@@ -1,0 +1,582 @@
+[
+  {
+    "id": "gold-001",
+    "chunk_id": "9be6dee609f5a59c",
+    "source_file": "100-001.pdf",
+    "page_number": 7,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wer muss sich bei fremden Firmen auch an deren Unfallverhütungsvorschriften halten?",
+    "question_precise": "Nach Dokument 100-001.pdf, Abschnitt 1.1.1: Wer hat bei Tätigkeiten in einem fremden Unternehmen zusätzlich die dort geltenden Unfallverhütungsvorschriften zu beachten?",
+    "answer_snippet": "auch die Unfallverhütungsvorschriften zu beachten, die für das fremde Unternehmen gelten."
+  },
+  {
+    "id": "gold-002",
+    "chunk_id": "802964664b74db11",
+    "source_file": "100-001.pdf",
+    "page_number": 18,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Was muss der Chef machen, wenn er die Gefahr nicht selbst sicher beurteilen kann?",
+    "question_precise": "Was ist gemäß Auszug aus DGUV-Dokument 100-001.pdf auf Seite 18 zu tun, wenn dem Unternehmer die Fachkunde zur Bewertung der ermittelten Gefährdungen fehlt?",
+    "answer_snippet": "muss die Unterstützung von der Fachkraft für Arbeitssi­cherheit"
+  },
+  {
+    "id": "gold-003",
+    "chunk_id": "063f4375a0ac779c",
+    "source_file": "100-001.pdf",
+    "page_number": 38,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Worauf muss der Unternehmer achten, bevor er jemandem eine Aufgabe gibt?",
+    "question_precise": "Was muss der Unternehmer bei der Übertragung von Aufgaben nach DGUV Dokument 100-001, Abschnitt 2.6, hinsichtlich der Eignung der Versicherten berücksichtigen?",
+    "answer_snippet": "ob die Versicherten befähigt sind, die für die Sicherheit"
+  },
+  {
+    "id": "gold-004",
+    "chunk_id": "0229067585f2b3b9",
+    "source_file": "100-001.pdf",
+    "page_number": 78,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Was muss der Unternehmer draußen am Arbeitsplatz machen, wenn das Wetter die Leute gefährdet?",
+    "question_precise": "Welche Maßnahmen hat der Unternehmer nach DGUV-Dokument 100-001, Abschnitt 4.5, bei wetterbedingten Unfall- und Gesundheitsgefahren im Außenbereich vorzusehen?",
+    "answer_snippet": "geeignete Maßnahmen am Arbeitsplatz vorzusehen"
+  },
+  {
+    "id": "gold-005",
+    "chunk_id": "46c975953f358528",
+    "source_file": "103-011.pdf",
+    "page_number": 8,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Was muss der Chef für Arbeiten unter Spannung schriftlich festhalten, und wer entscheidet vor Ort, ob die Arbeit sicher geht?",
+    "question_precise": "Welche Inhalte muss die Arbeitsanweisung für Arbeiten unter Spannung nach DGUV 103-011, Abschnitt 3.1.2, regeln, und wer hat die Entscheidung über die sichere Durchführung der Arbeiten zu treffen?",
+    "answer_snippet": "die mit der Durchführung dieser Arbeiten beauftragte Person entscheiden muss"
+  },
+  {
+    "id": "gold-006",
+    "chunk_id": "5a9894e93e713689",
+    "source_file": "103-011.pdf",
+    "page_number": 9,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Was muss die anweisende Fachkraft vorgeben bzw. prüfen, bevor sie jemandem die Arbeit überträgt?",
+    "question_precise": "Welche Pflichten hat die anweisende Elektrofachkraft nach DGUV 103-011, Abschnitt 3.1.4.1, vor der Übertragung von Aufgaben?",
+    "answer_snippet": "der Grad der Befähigung des Ausführenden der Arbeiten unter Spannung zu prüfen"
+  },
+  {
+    "id": "gold-007",
+    "chunk_id": "ddfdd7af63aca2c7",
+    "source_file": "103-011.pdf",
+    "page_number": 12,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Was muss jemand lernen, bevor er Arbeiten unter Spannung machen darf?",
+    "question_precise": "Welche Ausbildungsinhalte sind gemäß Dokument 103-011.pdf, Abschnitt 3.2.2, für das Erlangen der Befähigung zum Arbeiten unter Spannung vorgesehen?",
+    "answer_snippet": "Zum Erlangen der Fähigkeiten im Arbeiten unter Spannung ist eine Spezialausbildung in Theorie und Praxis erforderlich."
+  },
+  {
+    "id": "gold-008",
+    "chunk_id": "503df89001d55cb6",
+    "source_file": "103-011.pdf",
+    "page_number": 32,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wofür wird so ein isolierender Schutzanzug im Wesentlichen eingesetzt, und bis zu welcher Spannung ist der überhaupt geeignet?",
+    "question_precise": "Wofür wird der isolierende Anzug gemäß DGUV-Dokument 103-011, S. 32, im Wesentlichen eingesetzt, und für welche Nennwechselspannung ist er geeignet?",
+    "answer_snippet": "für Nennwechselspannungen bis 500 V (Klasse 00) geeignet."
+  },
+  {
+    "id": "gold-009",
+    "chunk_id": "ef52b37de07a9ed0",
+    "source_file": "103-012.pdf",
+    "page_number": 4,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Woran kann sich der Unternehmer bei diesen Regeln orientieren, wenn er seine Arbeitsschutzpflichten erfüllen will?",
+    "question_precise": "Woran kann sich der Unternehmer nach dem Auszug aus DGUV 103-012, Anhang 5, bei der Umsetzung seiner Pflichten aus staatlichen Arbeitsschutzvorschriften oder Unfallverhütungsvorschriften orientieren?",
+    "answer_snippet": "sollen ihm Hilfestellung bei der Umsetzung seiner Pflichten"
+  },
+  {
+    "id": "gold-010",
+    "chunk_id": "917941dfb86bcf83",
+    "source_file": "103-012.pdf",
+    "page_number": 6,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wann dürfen Arbeiten an spannungsführenden Anlagen überhaupt gemacht werden?",
+    "question_precise": "Wie wird im Auszug aus der DGUV-Regel 103-012 die Grundvoraussetzung für die Anwendung der Arbeitsmethode „Arbeiten unter Spannung“ beschrieben?",
+    "answer_snippet": "wenn die Sicherheit und der Gesundheitsschutz aller an den Arbeiten beteiligten Personen sichergestellt werden kann."
+  },
+  {
+    "id": "gold-011",
+    "chunk_id": "4c7f4ccb79b14b0d",
+    "source_file": "103-012.pdf",
+    "page_number": 9,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wann gilt eine Tätigkeit als Arbeiten unter Spannung?",
+    "question_precise": "Wie wird in Dokument 103-012.pdf auf Seite 9 Arbeiten unter Spannung (AuS) definiert?",
+    "answer_snippet": "Arbeiten unter Spannung (AuS) ist jede Arbeit"
+  },
+  {
+    "id": "gold-012",
+    "chunk_id": "862eca5cadfd0923",
+    "source_file": "103-012.pdf",
+    "page_number": 21,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wie oft müssen die Leute, die für Arbeiten unter Spannung zugelassen sind, neu auf den Stand gebracht werden?",
+    "question_precise": "Wie häufig ist gemäß DGUV 103-012, Abschnitt 5.2, die Aktualisierung der Befähigung von Beschäftigten für Arbeiten unter Spannung vorzunehmen?",
+    "answer_snippet": "nach vier Jahren zu aktualisieren."
+  },
+  {
+    "id": "gold-013",
+    "chunk_id": "c42e293c3f4417e2",
+    "source_file": "203-002.pdf",
+    "page_number": 20,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wie schwer darf der isolierende Schutzanzug höchstens sein und woraus besteht er?",
+    "question_precise": "Welche Anforderungen nennt der Auszug aus DGUV 203-002 für den isolierenden Schutzanzug hinsichtlich Aufbau und Höchstgewicht?",
+    "answer_snippet": "er muss leicht sein – Höchstgewicht 3,5 kg –"
+  },
+  {
+    "id": "gold-014",
+    "chunk_id": "45047af0f1e2bf30",
+    "source_file": "203-002.pdf",
+    "page_number": 21,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Was muss ich vor dem Loslegen an der Anlage als Erstes machen?",
+    "question_precise": "Welche erste Maßnahme ist nach Dokument 203-002.pdf, Abschnitt 5.3.1, vor Beginn der Arbeiten auszuführen?",
+    "answer_snippet": "Stets ist mit dem Freischalten zu beginnen."
+  },
+  {
+    "id": "gold-015",
+    "chunk_id": "43b0dd6cc55c377d",
+    "source_file": "203-002.pdf",
+    "page_number": 35,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Welche Schutzart müssen Leitungsroller und Verlängerungen auf der Baustelle mindestens haben, wenn’s hart zur Sache geht?",
+    "question_precise": "Welche Mindestschutzart fordern die Angaben im Dokument 203-002 für Leitungsroller und Verlängerungen beim Einsatz unter erschwerten Bedingungen?",
+    "answer_snippet": "mindestens der Schutzart IP X4 genügen"
+  },
+  {
+    "id": "gold-016",
+    "chunk_id": "606b0131bb639afc",
+    "source_file": "203-004.pdf",
+    "page_number": 7,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wann spricht man von so einem engen Bereich, in dem man an einer leitfähigen Umgebung anliegt?",
+    "question_precise": "Wie definiert die DGUV Information 203-004 in Abschnitt 2.2 einen Bereich mit begrenzter Bewegungsfreiheit in leitfähiger Umgebung?",
+    "answer_snippet": "eine Person mit ihrem Körper großflächig in Berührung mit der Umgebung stehen kann"
+  },
+  {
+    "id": "gold-017",
+    "chunk_id": "7fdb477ebb83e28a",
+    "source_file": "203-004.pdf",
+    "page_number": 17,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Welche Schutzmaßnahme braucht man für ein mobiles Gerät an einer Steckdose, wenn man nicht weiß, wie die Steckdose abgesichert ist?",
+    "question_precise": "Welche Schutzmaßnahme ist gemäß DGUV-Dokument 203-004.pdf, Abschnitt 5.2.2, beim Betrieb ortsveränderlicher elektrischer Betriebsmittel hinter Steckdosen mit unbekannter Schutzmaßnahme zulässig?",
+    "answer_snippet": "PRCD-S mit IΔn ≤ 30 mA nach VDE 0661-10"
+  },
+  {
+    "id": "gold-018",
+    "chunk_id": "ed23ac7a37ca54de",
+    "source_file": "203-004.pdf",
+    "page_number": 34,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Welche Norm regelt den Schutz gegen Stromschlag?",
+    "question_precise": "Welche Norm nennt das Dokument 203-004.pdf auf Seite 34 für den Schutz gegen elektrischen Schlag?",
+    "answer_snippet": "Schutzmaßnahmen – Schutz gegen elektrischen Schlag"
+  },
+  {
+    "id": "gold-019",
+    "chunk_id": "5fb40368f267273a",
+    "source_file": "203-005.pdf",
+    "page_number": 6,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Für welche Geräte ist diese Info hier überhaupt gedacht – und für welche nicht?",
+    "question_precise": "Wofür gilt die DGUV Information 203-005 bei der Auswahl ortsveränderlicher elektrischer Betriebsmittel, und für welche Einsatzbereiche gilt sie nicht?",
+    "answer_snippet": "Sie findet keine Anwendung auf die Auswahl elektrischer Betriebsmittel"
+  },
+  {
+    "id": "gold-020",
+    "chunk_id": "c9366dba0c699adf",
+    "source_file": "203-005.pdf",
+    "page_number": 9,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Welche Mindestschutzart braucht ein Gerät der Kategorie 2, wenn es nicht ausdrücklich zu den Ausnahmen gehört?",
+    "question_precise": "Welche Mindestanforderung an die Schutzart gilt für elektrische Betriebsmittel der Kategorie 2 gemäß DGUV Dokument 203-005, Abschnitt 4.2?",
+    "answer_snippet": "Schutzart:\t\nIP 54, außer:"
+  },
+  {
+    "id": "gold-021",
+    "chunk_id": "3519019a33902d89",
+    "source_file": "203-005.pdf",
+    "page_number": 11,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wer darf so ein elektrisches Gerät überhaupt wieder instand setzen?",
+    "question_precise": "Wer ist nach DGUV Information 203-005, Abschnitt 6, zur Instandsetzung elektrischer Betriebsmittel befugt?",
+    "answer_snippet": "nur durch Elektrofachkräfte oder unter deren Leitung und Aufsicht"
+  },
+  {
+    "id": "gold-022",
+    "chunk_id": "2820f1faa01ea6da",
+    "source_file": "203-005.pdf",
+    "page_number": 18,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Zählen metallische Ummantelungen oder Schirme hier als Leiter, und müssen sie farblich gekennzeichnet werden?",
+    "question_precise": "Wie werden nach DGUV 203-005, Tabelle 4, blanke konzentrische Leiter wie metallene Mäntel, Armierungen und Schirme behandelt, und ist eine Farbkennzeichnung erforderlich?",
+    "answer_snippet": "werden in dieser Tabelle nicht als Leiter betrachtet"
+  },
+  {
+    "id": "gold-023",
+    "chunk_id": "5b566da8bb16ef25",
+    "source_file": "203-005.pdf",
+    "page_number": 21,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "In welchen Arbeitsbereichen reichen Geräte der Kategorie K1 hier aus?",
+    "question_precise": "Welche Einsatzbedingungen nennt das Dokument 203-005.pdf auf Seite 21 für Arbeitsbereiche, in denen K1-Geräte ausreichend sein können?",
+    "answer_snippet": "Werkstatt- (Abb. 1 und 2), Lager- (Abb. 3) und Fertigungsbereiche"
+  },
+  {
+    "id": "gold-024",
+    "chunk_id": "0087657821ff4902",
+    "source_file": "203-006.pdf",
+    "page_number": 18,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wann brauchen nebeneinander stehende Container auf der Baustelle einen Erdungsanschluss, und wie werden sie verbunden?",
+    "question_precise": "Welche Anforderungen stellt DGUV Information 203-006, Abschnitt 4.2.3, an Erdungsanlage und Schutzpotentialausgleich bei einer Gruppe von mindestens zwei nebeneinander aufgebauten Baustellencontainern?",
+    "answer_snippet": "Alle Container sind zusätzlich untereinander mittels Schutzpotentialausgleichsleiter mit mindestens 16 mm² zu verbinden."
+  },
+  {
+    "id": "gold-025",
+    "chunk_id": "7eb621e83133b391",
+    "source_file": "203-006.pdf",
+    "page_number": 20,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Müssen wir den Baustromverteiler während des Betriebs immer frei rankommen können?",
+    "question_precise": "Ist im Dokument 203-006.pdf, Abschnitt 4.3, gefordert, dass Baustromverteiler während des Betriebes jederzeit frei zugänglich sein müssen?",
+    "answer_snippet": "Baustromverteiler müssen während des Betriebes jederzeit frei zugänglich sein."
+  },
+  {
+    "id": "gold-026",
+    "chunk_id": "0ea83a46e243ef4f",
+    "source_file": "203-006.pdf",
+    "page_number": 29,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Darf man so einen Zwischenstecker an normalen Steckdosen einsetzen, und gilt das auch an ungeerdeten Stromerzeugern nicht?",
+    "question_precise": "Ist nach DGUV 203-006, Abschnitt 5.4.1.1, eine ortsveränderliche Schutzeinrichtung für Wechselstrom-Steckdosen in ungeerdeten Netzen, z. B. hinter ungeerdeten Stromerzeugern, zulässig?",
+    "answer_snippet": "In ungeerdeten Netzen, z. B. hinter ungeerdeten Stromerzeugern, ist diese Schutzeinrichtung nicht zu verwenden."
+  },
+  {
+    "id": "gold-027",
+    "chunk_id": "ffaac7897349a8eb",
+    "source_file": "203-006.pdf",
+    "page_number": 33,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Welche zusätzliche Schutzmaßnahme kann man hier noch einsetzen, wenn normale Maßnahmen nicht reichen?",
+    "question_precise": "Welche weiteren Schutzmaßnahmen nennt DGUV Dokument 203-006.pdf in Abschnitt 5.5?",
+    "answer_snippet": "SELV (Schutzkleinspannung) nach VDE 0100-410 Abschnitt 414"
+  },
+  {
+    "id": "gold-028",
+    "chunk_id": "1cb6749a8e7c7e90",
+    "source_file": "203-006.pdf",
+    "page_number": 38,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Welche Leitung darf ich bei einem ortsveränderlichen Gerät bis 4 Meter noch als Anschlussleitung nehmen?",
+    "question_precise": "Welche zulässige Bauart darf laut DGUV-Dokument 203-006, Abschnitt 6.5, bei ortsveränderlichen elektrischen Betriebsmitteln bis zu einer Leitungslänge von 4 m als Geräteanschlussleitung verwendet werden?",
+    "answer_snippet": "ist als Geräteanschlussleitung auch die Bauart H05RN-F oder H05BQ-F zulässig"
+  },
+  {
+    "id": "gold-029",
+    "chunk_id": "ec948c094be239f3",
+    "source_file": "203-070.pdf",
+    "page_number": 12,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Welche Person gilt bei den Prüfarbeiten als diejenige, die dafür fachlich gerade steht?",
+    "question_precise": "Wie definiert das DGUV-Dokument 203-070 auf Seite 12 die Prüfperson, und welche fachliche Verantwortung trägt sie?",
+    "answer_snippet": "Die Prüfperson trägt die fachliche Verantwortung"
+  },
+  {
+    "id": "gold-030",
+    "chunk_id": "840a90590ed71b79",
+    "source_file": "203-070.pdf",
+    "page_number": 13,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Was ist mit dem sicheren Endzustand des Betriebsmittels gemeint?",
+    "question_precise": "Wie wird im Dokument 203-070, Abschnitt 2.29, der Sollzustand eines elektrischen Betriebsmittels definiert?",
+    "answer_snippet": "Festgelegter sicherer Zustand des elektrischen Betriebsmittels"
+  },
+  {
+    "id": "gold-031",
+    "chunk_id": "00253af39a0fede3",
+    "source_file": "203-070.pdf",
+    "page_number": 30,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Woran kann man erkennen, dass ein gemessener Schutzleiterwert trotz Grenzwert schon auf Ärger an der Leitung oder am Kontakt hindeutet?",
+    "question_precise": "Welche Hinweise nennt das DGUV-Dokument 203-070, S. 30, dafür, dass ein noch zulässiger Messwert bei der Schutzleiterwiderstandsmessung bereits auf eine fehlerhafte Kontaktstelle oder einen unzulässigen Leitungsquerschnitt schließen lässt?",
+    "answer_snippet": "kann aber bereits auf eine korrodierte oder gelockerte Kontaktstelle"
+  },
+  {
+    "id": "gold-032",
+    "chunk_id": "3a421ea457cf118f",
+    "source_file": "203-070.pdf",
+    "page_number": 57,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wann darf ich das Ersatz-Ableitstromverfahren überhaupt einsetzen?",
+    "question_precise": "Unter welchen Voraussetzungen darf nach Dokument 203-070.pdf, Abschnitt 3.5.7, die alternative Methode angewendet werden?",
+    "answer_snippet": "nur nach vollständig durchgeführter und bestandener Isolationswiderstandsmessung angewendet werden."
+  },
+  {
+    "id": "gold-033",
+    "chunk_id": "d108b9ae1ec1ae9e",
+    "source_file": "203-071.pdf",
+    "page_number": 28,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Womit fängt die Prüfung von elektrischen Anlagen und Geräten immer an?",
+    "question_precise": "Was ist nach DGUV 203-071.pdf, Abschnitt 6.1.1, der erste Prüfschritt bei der technischen Prüfung elektrischer Anlagen und Betriebsmittel?",
+    "answer_snippet": "immer als erster Prüfschritt durchzufüh"
+  },
+  {
+    "id": "gold-034",
+    "chunk_id": "8d76259b7a0b4621",
+    "source_file": "203-071.pdf",
+    "page_number": 29,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wann muss ich bei einem Gerät oder an der Anlage überhaupt einen Funktionscheck machen?",
+    "question_precise": "Wann ist gemäß DGUV-Dokument 203-071.pdf, Abschnitt 6.1.3, bei einem ortsveränderlichen oder ortsfesten elektrischen Betriebsmittel beziehungsweise bei Teilen der elektrischen Anlage eine Funktionsprüfung durchzuführen?",
+    "answer_snippet": "insoweit vorzunehmen, wie es zum Nachweis der Sicherheit erforderlich ist."
+  },
+  {
+    "id": "gold-035",
+    "chunk_id": "7de64fe0aff60d03",
+    "source_file": "203-071.pdf",
+    "page_number": 45,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wer muss die Messungen machen, und wer bestätigt vorher, dass die Person dafür taugt?",
+    "question_precise": "Wer führt nach Dokument 203-071.pdf auf Seite 45 die Prüfungen eigenverantwortlich durch, und welche Anforderung muss die Prüfperson vorab nachweisen?",
+    "answer_snippet": "Die Prüfungen sind durch eine Prüfperson, die den Anforderungen nach"
+  },
+  {
+    "id": "gold-036",
+    "chunk_id": "c038405b6ec01913",
+    "source_file": "203-072.pdf",
+    "page_number": 11,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wann muss man beim Prüfen noch extra testen, ob die Schutzteile wirklich richtig arbeiten?",
+    "question_precise": "Wann ist gemäß DGUV-Dokument 203-072.pdf, Abschnitt 2.10, ein Erproben im Rahmen der Prüfung erforderlich?",
+    "answer_snippet": "in Abhängigkeit von der Art des Prüfobjektes und der Funktion seiner Bauteile"
+  },
+  {
+    "id": "gold-037",
+    "chunk_id": "2e22a05a65d4726b",
+    "source_file": "203-072.pdf",
+    "page_number": 79,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Muss das Prüfprotokoll in einer bestimmten Form sein, und wie lange muss ich es aufheben?",
+    "question_precise": "Welche Vorgaben macht das Dokument 203-072.pdf in Abschnitt 3.6.3 zur Form der Dokumentation und zur Aufbewahrungsdauer der Ergebnisse?",
+    "answer_snippet": "Die Form der Dokumentation ist nicht verbindlich vorgegeben"
+  },
+  {
+    "id": "gold-038",
+    "chunk_id": "ef6888e5cb7045c9",
+    "source_file": "203-072.pdf",
+    "page_number": 89,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Worauf muss ich beim Messgerät achten, damit es die Prüfung mitmacht und mich nicht gefährdet?",
+    "question_precise": "Welche Kennzeichnung bzw. Schutzklasse muss das Messgerät gemäß DGUV-Dokument 203-072 aufweisen, damit es für die jeweilige Messaufgabe geeignet ist?",
+    "answer_snippet": "eine für die Messaufgabe ausreichende Überspannungskategorie (CAT III oder IV)"
+  },
+  {
+    "id": "gold-039",
+    "chunk_id": "e3facbc4a8866cb2",
+    "source_file": "203-072.pdf",
+    "page_number": 124,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Welche Norm nennt der Auszug für die Prüfung von Niederspannungsanlagen?",
+    "question_precise": "Welche Norm ist in DGUV-Dokument 203-072, Anhang C, Abschnitt 4, als Regelwerk für die Prüfung von Niederspannungsanlagen aufgeführt?",
+    "answer_snippet": "„Errichten von Niederspannungsanlagen“ – Teil 6: Prüfungen"
+  },
+  {
+    "id": "gold-040",
+    "chunk_id": "e7c0ed67578a784b",
+    "source_file": "203-077.pdf",
+    "page_number": 18,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Woran kann ich mich bei einer Worst-Case-Betrachtung statt des normalen kP-Werts orientieren?",
+    "question_precise": "Wodurch darf in Dokument 203-077.pdf auf Seite 18 bei einer Worst-Case-Betrachtung der Faktor kP ersetzt werden?",
+    "answer_snippet": "kP durch den maximalen Wert kPmax ersetzt werden"
+  },
+  {
+    "id": "gold-041",
+    "chunk_id": "28442e1f5cf19be2",
+    "source_file": "203-077.pdf",
+    "page_number": 45,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Kann man die beiden Lichtbogen-Prüfarten direkt miteinander vergleichen oder umrechnen?",
+    "question_precise": "Lässt sich im Dokument 203-077.pdf, Seite 45, das Box-Test-Verfahren direkt mit dem Open-Arc-Test vergleichen oder ineinander überführen?",
+    "answer_snippet": "Beide Verfahren sind nicht direkt vergleichbar und nicht ineinander überführbar"
+  },
+  {
+    "id": "gold-042",
+    "chunk_id": "439277f99d5da572",
+    "source_file": "203-077.pdf",
+    "page_number": 68,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Reicht bei der Arbeit an der Hausinstallation normale Arbeitskleidung aus, oder braucht man extra Schutzkleidung?",
+    "question_precise": "Lässt sich gemäß DGUV Information 203-077, Beispiel 5.4, bei Arbeiten an der Hausinstallation auf besondere Störlichtbogenschutzkleidung verzichten?",
+    "answer_snippet": "handelsübliche Arbeitskleidung, bestehend aus langärmeliger Oberbekleidung und langer Hose ist ausreichend."
+  },
+  {
+    "id": "gold-043",
+    "chunk_id": "470c7163b41a8204",
+    "source_file": "DGUV Vorschrift 1 „Grundsätze der Prävention“ - vorschrift1.pdf",
+    "page_number": 13,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Was müssen Beschäftigte sofort melden, wenn sie eine akute Gefahr oder einen Defekt an einer Schutzeinrichtung merken?",
+    "question_precise": "Welche Meldepflicht haben Versicherte nach DGUV Vorschrift 1 § 16 bei festgestellter unmittelbarer erheblicher Gefahr oder bei einem Defekt an Schutzvorrichtungen?",
+    "answer_snippet": "jede von ihnen festgestellte unmittelbare erhebliche Gefahr"
+  },
+  {
+    "id": "gold-044",
+    "chunk_id": "98c6f61bc679c9a6",
+    "source_file": "DGUV Vorschrift 1 „Grundsätze der Prävention“ - vorschrift1.pdf",
+    "page_number": 19,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Ab wann muss auf einer Baustelle ein extra Raum für die Erstversorgung da sein?",
+    "question_precise": "Unter welchen Bedingungen ist nach DGUV Vorschrift 1 „Grundsätze der Prävention“ auf einer Baustelle ein Erste-Hilfe-Raum oder eine vergleichbare Einrichtung vorzuhalten?",
+    "answer_snippet": "auf einer Baustelle mit mehr als 50 dort beschäftigten Versicherten vorhanden ist."
+  },
+  {
+    "id": "gold-045",
+    "chunk_id": "a8133959a4bee1a9",
+    "source_file": "DGUV Vorschrift 1 „Grundsätze der Prävention“ - vorschrift1.pdf",
+    "page_number": 30,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Muss ich selber die Ausbildung machen können oder genug ausgebildete Leute dabeihaben?",
+    "question_precise": "Muss der Antragsteller nach DGUV Vorschrift 1, Abschnitt 2.2, seine eigene Ausbildungsbefähigung nachweisen oder über ausreichend viele qualifizierte Lehrkräfte verfügen?",
+    "answer_snippet": "der Antragsteller muss nachweisen, dass er selbst zur Ausbildung befähigt ist"
+  },
+  {
+    "id": "gold-046",
+    "chunk_id": "2923faad8f0251ce",
+    "source_file": "DGUV Vorschrift 1 „Grundsätze der Prävention“ - vorschrift1.pdf",
+    "page_number": 31,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Was muss für den Erste-Hilfe-Lehrgang mindestens an Raum und Ausstattung da sein?",
+    "question_precise": "Welche Anforderungen stellt die DGUV Vorschrift 1 „Grundsätze der Prävention“ in Abschnitt 3.1 an Lehrgangsräume, Einrichtungen und Unterrichtsmittel?",
+    "answer_snippet": "Es muss mindestens ein Raum zur Verfügung stehen"
+  },
+  {
+    "id": "gold-047",
+    "chunk_id": "1f44f270a9be3442",
+    "source_file": "i-8590.pdf",
+    "page_number": 7,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wann gilt eine andere Schutzmaßnahme genauso gut wie die vorgegebenen Regeln?",
+    "question_precise": "Wie ist in GUV-I 8590 § 2 Abs. 2 die Gleichwertigkeit einer abweichenden Maßnahme gegenüber den elektrotechnischen Regeln definiert?",
+    "answer_snippet": "wenn eine ebenso wirksame andere Maßnahme getroffen wird"
+  },
+  {
+    "id": "gold-048",
+    "chunk_id": "6acebf8b38775b3c",
+    "source_file": "i-8590.pdf",
+    "page_number": 8,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wer unterweist, wenn jemand als Elektrofachkraft auf dem Weg dorthin noch praktische Erfahrung sammelt?",
+    "question_precise": "Welche Personengruppe kann nach GUV-I 8590, Erläuterungen zu § 2 Abs. 3, die Ausbildung begleiten, wenn eine mehrjährige Tätigkeit zur Qualifikation führen soll?",
+    "answer_snippet": "durch eine Ausbildung durch eine Elektrofachkraft"
+  },
+  {
+    "id": "gold-049",
+    "chunk_id": "dbf7929b6c67d452",
+    "source_file": "i-8590.pdf",
+    "page_number": 17,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wann reicht in zugänglichen Bereichen bei Arbeiten nur zum Wiederherstellen des Sollzustands ein teilweiser Berührungsschutz aus, und wie müssen die Abdeckungen gesichert sein?",
+    "question_precise": "Unter welchen Bedingungen genügt nach DGUV i-8590.pdf, Seite 17, in nur elektrotechnisch unterwiesenen Bereichen bei Betriebsmitteln zum Wiederherstellen des Soll-Zustands ein teilweiser Schutz gegen direktes Berühren, und welche Anforderungen gelten an die Abdeckungen?",
+    "answer_snippet": "wenn sie gegen unbeabsichtigtes Verschieben oder Entfernen gesichert sind"
+  },
+  {
+    "id": "gold-050",
+    "chunk_id": "7eb2a37eff2dd067",
+    "source_file": "i-8590.pdf",
+    "page_number": 50,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Was sind hier mit festgelegten Arbeiten gemeint?",
+    "question_precise": "Wie werden im Anhang A des Dokuments i-8590.pdf „festgelegte Tätigkeiten“ definiert?",
+    "answer_snippet": "gleichartige, sich wiederholende elektrotechnische Arbeiten an Betriebsmitteln"
+  },
+  {
+    "id": "gold-051",
+    "chunk_id": "d31528bcc00dcb48",
+    "source_file": "vorschrift3.pdf",
+    "page_number": 4,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wer darf die elektrischen Anlagen und Geräte hier überhaupt aufbauen, ändern und warten?",
+    "question_precise": "Wer ist nach DGUV Vorschrift 3 § 3 Abs. 1 für das Errichten, Ändern und Instandhalten elektrischer Anlagen und Betriebsmittel vorgesehen?",
+    "answer_snippet": "nur von einer Elektrofachkraft oder unter Leitung und Aufsicht einer Elektrofachkraft"
+  },
+  {
+    "id": "gold-052",
+    "chunk_id": "94bf66d28106fd93",
+    "source_file": "vorschrift3.pdf",
+    "page_number": 5,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wann darf ich die Anlage überhaupt erst benutzen?",
+    "question_precise": "Unter welchen Voraussetzungen dürfen elektrische Anlagen und Betriebsmittel gemäß DGUV Vorschrift 3 verwendet werden?",
+    "answer_snippet": "wenn sie den betrieblichen und örtlichen Sicherheitsanforderungen"
+  },
+  {
+    "id": "gold-053",
+    "chunk_id": "9c26a528ec542d1e",
+    "source_file": "vorschrift3.pdf",
+    "page_number": 6,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wann muss ich Anlagen und Geräte überhaupt prüfen lassen, bevor sie laufen oder nach einer Reparatur wieder eingeschaltet werden?",
+    "question_precise": "Unter welchen Zeitpunkten sind elektrische Anlagen und Betriebsmittel gemäß DGUV Vorschrift 3 vor der Inbetriebnahme bzw. nach Änderung oder Instandsetzung zu prüfen?",
+    "answer_snippet": "vor der ersten Inbetriebnahme und nach einer Änderung oder Instandsetzung"
+  },
+  {
+    "id": "gold-054",
+    "chunk_id": "8a42fae9b28e65e8",
+    "source_file": "vorschrift3.pdf",
+    "page_number": 8,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wann darf ich in der Nähe spannungsführender Teile überhaupt arbeiten?",
+    "question_precise": "Unter welchen Voraussetzungen ist Arbeiten in der Nähe aktiver Teile elektrischer Anlagen und Betriebsmittel nach DGUV Vorschrift 3, § 7, zulässig?",
+    "answer_snippet": "darf, abgesehen von den Fest­legungen in § 8, nur gearbeitet werden"
+  },
+  {
+    "id": "gold-055",
+    "chunk_id": "c9514fb06242a012",
+    "source_file": "vorschrift3.pdf",
+    "page_number": 9,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wann ist die Vorschrift gültig geworden und was hat sie damals abgelöst?",
+    "question_precise": "Ab wann trat die DGUV Vorschrift 3 in Kraft und welche frühere Unfallverhütungsvorschrift wurde dabei außer Kraft gesetzt?",
+    "answer_snippet": "tritt am 1. April 1979*) in Kraft. Gleichzeitig"
+  },
+  {
+    "id": "gold-056",
+    "chunk_id": "5169f36cbed4ea1c",
+    "source_file": "vorschrift3da.pdf",
+    "page_number": 12,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Ab wann gilt die Prüffrist auf der Baustelle noch als in Ordnung?",
+    "question_precise": "Wann gilt nach DGUV Vorschrift 3 DA die Prüffrist als ausreichend bemessen, wenn die Fehlerquote bei Prüfungen von Betriebsmitteln in bestimmten Betriebsbereichen betrachtet wird?",
+    "answer_snippet": "Beträgt die Fehlerquote höchstens 2 %, kann die Prüffrist als ausreichend angesehen werden."
+  },
+  {
+    "id": "gold-057",
+    "chunk_id": "8533a36ee1edc267",
+    "source_file": "vorschrift3da.pdf",
+    "page_number": 20,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Wann darf man beim Arbeiten in der Nähe von spannungsführenden Teilen die größeren Sicherheitsabstände unterschreiten?",
+    "question_precise": "Unter welchen Bedingungen dürfen nach vorschrift3da.pdf die Schutzabstände nach Tabelle 4 auf die Abstände nach Tabelle 3 reduziert werden?",
+    "answer_snippet": "wenn die Arbeiten unter Beaufsichtigung durch Elektrofachkräfte"
+  },
+  {
+    "id": "gold-058",
+    "chunk_id": "dbc23fff753497e4",
+    "source_file": "vorschrift3da.pdf",
+    "page_number": 27,
+    "chunk_type": "NarrativeText",
+    "question_colloquial": "Bis wann mussten die alten Drehstromstecker gegen das Rundstecksystem getauscht werden?",
+    "question_precise": "Bis zu welchem Stichtag ist in DGUV Vorschrift 3 DA auf Seite 27 der Umstellung von Drehstromsteckvorrichtungen nach der alten Norm auf das Rundsteckvorrichtungssystem zu erfolgen?",
+    "answer_snippet": "bis zum 31. Dezember 1997"
+  }
+]

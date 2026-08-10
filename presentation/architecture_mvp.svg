@@ -1,0 +1,68 @@
+<svg viewBox="0 0 880 700" width="880" height="700" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="t d">
+<title id="t">Architecture of the DGUV RAG MVP</title>
+<desc id="d">Two phases: indexing PDFs through the loader, chunking, BGE-M3 and CLIP embeddings into two ChromaDB collections; and querying through DenseRetriever, RAGEngine and OpenAI to an answer with sources. The image path is dashed because it is built but never queried.</desc>
+<style>
+.bx{fill:#fbfbfa;stroke:#d8d5cf;stroke-width:1.5;rx:8}
+.bxm{fill:none;stroke:#d8d5cf;stroke-width:1.5;stroke-dasharray:5 4;rx:8}
+.h{font:600 13px system-ui,-apple-system,sans-serif;fill:#1f1e1c}
+.s{font:11px system-ui,-apple-system,sans-serif;fill:#6f6b64}
+.hm{font:600 13px system-ui,-apple-system,sans-serif;fill:#6f6b64}
+.lab{font:600 11px system-ui,-apple-system,sans-serif;fill:#6f6b64;letter-spacing:.06em}
+.tiny{font:10px system-ui,-apple-system,sans-serif;fill:#6f6b64}
+.ar{fill:none;stroke:#b4afa6;stroke-width:1.5;marker-end:url(#a)}
+.arm{fill:none;stroke:#d8d5cf;stroke-width:1.5;stroke-dasharray:5 4;marker-end:url(#am)}
+.rule{stroke:#d8d5cf;stroke-width:1}
+</style>
+<defs>
+<marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,1 L7,4 L0,7 z" fill="#b4afa6"/></marker>
+<marker id="am" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,1 L7,4 L0,7 z" fill="#d8d5cf"/></marker>
+</defs>
+<rect x="0" y="0" width="880" height="700" fill="#ffffff"/>
+<text class="lab" x="24" y="24">1 &#8212; INDEXING &#183; ONE-OFF, OFFLINE</text>
+<line class="rule" x1="24" y1="32" x2="856" y2="32"/>
+<rect class="bx" x="24" y="48" width="176" height="64"/>
+<text class="h" x="42" y="76">data/</text><text class="s" x="42" y="94">15 DGUV PDFs</text>
+<path class="ar" d="M200,80 L226,80"/>
+<rect class="bx" x="232" y="48" width="204" height="64"/>
+<text class="h" x="250" y="76">PDFDocumentLoader</text><text class="s" x="250" y="94">text &#183; tables &#183; images</text>
+<path class="ar" d="M436,80 L462,80"/>
+<rect class="bx" x="468" y="48" width="212" height="64"/>
+<text class="h" x="486" y="76">MultiModalPreprocessor</text><text class="s" x="486" y="94">chunking + chunk_id</text>
+<path class="ar" d="M540,112 C540,145 489,140 489,164"/>
+<path class="ar" d="M620,112 C620,145 691,140 691,164"/>
+<path class="ar" d="M478,112 C420,150 300,200 244,274"/>
+<rect class="bx" x="404" y="170" width="170" height="64"/>
+<text class="h" x="422" y="198">BGE-M3</text><text class="s" x="422" y="216">text + tables</text>
+<rect class="bxm" x="606" y="170" width="170" height="64"/>
+<text class="hm" x="624" y="198">CLIP</text><text class="s" x="624" y="216">full-page screenshots</text>
+<path class="ar" d="M489,234 L489,274"/>
+<path class="arm" d="M691,234 L691,274"/>
+<rect class="bx" x="404" y="280" width="170" height="64"/>
+<text class="h" x="422" y="308">Chroma</text><text class="s" x="422" y="326">text_chunks</text>
+<rect class="bxm" x="606" y="280" width="170" height="64"/>
+<text class="hm" x="624" y="308">Chroma</text><text class="s" x="624" y="326">image_chunks</text>
+<text class="tiny" x="606" y="362">never queried by any search</text>
+<rect class="bx" x="144" y="280" width="200" height="64"/>
+<text class="h" x="162" y="308">artifacts/chunks.json</text><text class="s" x="162" y="326">basis for evaluation</text>
+<text class="lab" x="24" y="424">2 &#8212; QUERY &#183; AT RUNTIME</text>
+<line class="rule" x1="24" y1="432" x2="856" y2="432"/>
+<rect class="bx" x="24" y="448" width="150" height="64"/>
+<text class="h" x="42" y="476">Question</text><text class="s" x="42" y="494">electrical specialist</text>
+<path class="ar" d="M174,480 L200,480"/>
+<rect class="bx" x="206" y="448" width="196" height="64"/>
+<text class="h" x="224" y="476">DenseRetriever</text><text class="s" x="224" y="494">top 5 &#183; cosine</text>
+<path class="ar" d="M402,480 L428,480"/>
+<path class="ar" d="M440,344 C380,380 304,400 304,442"/>
+<text class="tiny" x="330" y="400">vector search</text>
+<rect class="bx" x="434" y="448" width="190" height="64"/>
+<text class="h" x="452" y="476">RAGEngine</text><text class="s" x="452" y="494">context + page markers</text>
+<path class="ar" d="M624,480 L650,480"/>
+<rect class="bx" x="656" y="448" width="150" height="64"/>
+<text class="h" x="674" y="476">OpenAI</text><text class="s" x="674" y="494">gpt-5.4-mini</text>
+<path class="ar" d="M731,512 C731,560 620,552 566,572"/>
+<rect class="bx" x="324" y="580" width="230" height="60"/>
+<text class="h" x="342" y="606">Answer + sources</text><text class="s" x="342" y="624">document &#183; page number</text>
+<line class="rule" x1="24" y1="668" x2="856" y2="668"/>
+<line x1="24" y1="684" x2="52" y2="684" stroke="#d8d5cf" stroke-width="1.5" stroke-dasharray="5 4"/>
+<text class="tiny" x="60" y="688">dashed = built, but unused in the MVP</text>
+</svg>
