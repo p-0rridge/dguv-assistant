@@ -3,4 +3,9 @@ __pycache__/
 .venv
 .env
 experiments.ipynb
-project_notes.txt
+project_notes/
+data_preprocessing_with_elasticsearch_and_docker.py
+chroma_db/
+extracted_images/
+artifacts/
+images/
