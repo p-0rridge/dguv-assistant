@@ -12,4 +12,4 @@ artifacts/*
 !artifacts/goldset.json
 !artifacts/unanswerable.json
 !artifacts/results/
-presentations/
+presentation/

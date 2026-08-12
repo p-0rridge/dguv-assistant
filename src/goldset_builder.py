@@ -39,7 +39,6 @@ TOC_PATTERN = re.compile(r"\.{4,}")
 GENERATION_PROMPT = """Du erhältst einen Auszug aus einem deutschen DGUV-Dokument.
 
 Dokument: {source_file}
-Seite: {page_number}
 
 --- AUSZUG ---
 {chunk_text}
@@ -54,15 +53,23 @@ einem JSON-Objekt, ohne Markdown-Codeblock, mit genau diesen Schlüsseln:
   "answer_snippet": "..."
 }}
 
-Regeln:
-- Beide Fragen müssen allein aus diesem Auszug beantwortbar sein.
-- "question_colloquial": So, wie eine Elektrofachkraft auf der Baustelle mündlich \
-fragen würde. Alltagssprache, keine Dokumentennummern, keine Abschnittsnummern.
-- "question_precise": Fachsprachlich, mit der Dokumentenbezeichnung und - falls im \
+Beide Fragen müssen für sich allein verständlich sein - sie werden später ohne diesen \
+Auszug an ein Suchsystem gestellt. Verweise wie "hier", "in diesem Dokument", "diese \
+Anlage" oder "der genannte Abschnitt" sind verboten; benenne den Gegenstand ausdrücklich.
+
+Nenne in keiner der beiden Fragen einen Dateinamen, eine Dateiendung oder eine \
+Seitenzahl, und verwende keine Wendungen wie "laut Auszug" oder "nach Dokument X.pdf". \
+Solche Angaben kennt ein Fragesteller nicht.
+
+"question_colloquial": So, wie eine Elektrofachkraft auf der Baustelle mündlich fragen \
+würde. Alltagssprache, keine Normbezeichnung, keine Abschnittsnummer. Übernimm möglichst \
+wenige seltene Fachbegriffe wörtlich aus dem Auszug.
+
+"question_precise": Fachsprachlich, mit der DGUV-Bezeichnung in natürlicher Form \
+(zum Beispiel "DGUV Regel 103-011" oder "DGUV Information 203-071") und - falls im \
 Auszug erkennbar - der Abschnittsnummer.
-- Formuliere beide Fragen um. Übernimm möglichst wenige seltene Fachbegriffe wörtlich \
-aus dem Auszug, damit die Frage nicht allein durch Wortgleichheit auffindbar ist.
-- "answer_snippet": Ein wörtliches, unverändertes Zitat von 5 bis 15 Wörtern aus dem \
+
+"answer_snippet": Ein wörtliches, unverändertes Zitat von 5 bis 15 Wörtern aus dem \
 Auszug, das die Antwort belegt. Nichts hinzufügen, nichts weglassen, nichts korrigieren.
 """
 
@@ -170,9 +177,10 @@ class GoldsetBuilder:
         chunk: A usable chunk dict from chunks.json
         entry_id: Identifier written into the entry
         """
+        # The page number is deliberately not passed to the model: it must not be able
+        # to name the answer's location in the question it writes.
         prompt = GENERATION_PROMPT.format(
             source_file=chunk["source_file"],
-            page_number=chunk["page_number"],
             chunk_text=chunk["text"],
         )
         try:
