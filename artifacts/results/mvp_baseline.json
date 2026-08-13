@@ -15,7 +15,7 @@
       "recall_at_20": 0.9375,
       "mrr": 0.5571149553571428,
       "ndcg_at_5": 0.5957961855947956,
-      "latency_ms_median": 189.29009999556,
+      "latency_ms_median": 323.04445000045234,
       "per_document_recall": {
         "100-001.pdf": 0.6,
         "103-011.pdf": 1.0,
@@ -82,7 +82,7 @@
       "recall_at_20": 0.90625,
       "mrr": 0.6075635302197803,
       "ndcg_at_5": 0.6397277435863831,
-      "latency_ms_median": 217.44025000953116,
+      "latency_ms_median": 355.01269999986107,
       "per_document_recall": {
         "100-001.pdf": 1.0,
         "103-011.pdf": 0.6666666666666666,
@@ -163,5 +163,72 @@
         }
       ]
     }
+  },
+  "abstention": {
+    "questions": 14,
+    "abstention_rate": 0.0,
+    "by_category": {
+      "din_vde_verweis": 0.0,
+      "fachfremd": 0.0,
+      "nah_dran": 0.0
+    },
+    "answered_anyway": [
+      {
+        "question": "Welche Mindestquerschnitte für Schutzleiter legt DIN VDE 0100-540 fest?",
+        "answer": "Für den Schutzpotentialausgleichsleiter zur Verbindung mit der Erdungsschiene nennt der Kontext folgende Mindestquerschnitte: 6 mm² Kupfer, 16 mm² Aluminium oder 50 mm² Stahl. Unabhängig vom Material soll auf Baustellen aus Gründen der mechanischen Belastbarkeit mindestens 16 mm² verwendet werden. ["
+      },
+      {
+        "question": "Welche Verlegearten unterscheidet DIN VDE 0100-520 für Kabel und Leitungen?",
+        "answer": "Im bereitgestellten Kontext wird nur gesagt, dass für die Verlegung von nicht flexiblen Kabeln DIN VDE 0100-520 zu beachten ist; konkrete Verlegearten werden dort im Kontext nicht genannt. [Seite 21]"
+      },
+      {
+        "question": "Wie wird der Querschnitt des Schutzleiters in Abhängigkeit vom Außenleiter bemessen?",
+        "answer": "Im bereitgestellten Kontext ist keine allgemeine Bemessung des Schutzleiter-Querschnitts in Abhängigkeit vom Außenleiter angegeben. Es wird nur genannt, dass bei größeren Leiterquerschnitten als 1,5 mm² der zu erwartende ohmsche Widerstand mit einer Gleichung zu berechnen ist [Seite 21].  \n\nFür den "
+      },
+      {
+        "question": "In welchen Abständen müssen Auffanggurte für Arbeiten in der Höhe geprüft werden?",
+        "answer": "Im bereitgestellten Kontext steht nichts zu den Prüfintervallen von Auffanggurten. Daher kann ich die Frage anhand des Kontexts nicht beantworten."
+      },
+      {
+        "question": "Welche Schutzmaßnahmen gelten, wenn bei Abbrucharbeiten Asbest gefunden wird?",
+        "answer": "Im bereitgestellten Kontext finde ich **keine Angaben zu Abbrucharbeiten oder zu Asbest**. Daher kann ich dazu **keine Schutzmaßnahmen aus den vorliegenden Seiten nennen**."
+      },
+      {
+        "question": "Welche Anforderungen gelten für das Befahren von Windenergieanlagen?",
+        "answer": "Dazu enthält der bereitgestellte Kontext keine Angaben. Ich kann daher keine Anforderungen für das Befahren von Windenergieanlagen nennen. [Seite 7] [Seite 19] [Seite 25]"
+      },
+      {
+        "question": "Dürfen Drohnen zur Inspektion betrieblicher Anlagen eingesetzt werden?",
+        "answer": "Im bereitgestellten Kontext steht nur, was als Prüfobjekte gelten kann: Anlagen, Betriebsmittel, Arbeitsplätze und zugehörige Dokumente [Seite 14]. Zur Frage, ob Drohnen zur Inspektion betrieblicher Anlagen eingesetzt werden dürfen, enthält der Kontext keine Aussage. Daher kann ich das anhand des Ko"
+      },
+      {
+        "question": "Wann muss ein Laserschutzbeauftragter bestellt werden?",
+        "answer": "Dazu enthält der bereitgestellte Kontext keine जानकारी. Es finden sich nur Angaben zu Sicherheitsbeauftragten und allgemeinen Arbeitsschutzthemen, aber keine Regelung zur Bestellung eines Laserschutzbeauftragten. [Seite 14][Seite 69]"
+      },
+      {
+        "question": "Wer darf KNX-Installationen in der Gebäudeautomation in Betrieb nehmen?",
+        "answer": "Im bereitgestellten Kontext wird **nicht** beschrieben, wer **KNX-Installationen in der Gebäudeautomation in Betrieb nehmen darf**. Dazu enthält der Kontext keine Aussage. [Seite 4][Seite 5][Seite 7][Seite 19][Seite 55]"
+      },
+      {
+        "question": "In welchen Abständen sind Brandmeldeanlagen zu warten und zu prüfen?",
+        "answer": "Im bereitgestellten Kontext werden **Brandmeldeanlagen** nicht behandelt. Daher kann ich aus den vorhandenen Quellen **keine konkreten Wartungs- oder Prüfabstände** nennen. [Seite 42][Seite 43][Seite 44][Seite 29][Seite 92]"
+      },
+      {
+        "question": "Welche Prüfpflichten bestehen für Rauchwarnmelder in Betriebsräumen?",
+        "answer": "Im bereitgestellten Kontext wird zu **Rauchwarnmeldern in Betriebsräumen** keine konkrete Prüfpflicht genannt. Daher kann ich dazu **keine belastbare Aussage aus dem Kontext** machen. [Seite 7]\n\nAllgemein beschreibt der Kontext nur, dass für elektrische Betriebsmittel Prüfungen vor der ersten Inbetr"
+      },
+      {
+        "question": "Welche Anforderungen gelten für die elektrische Ausrüstung von Kälteanlagen mit brennbaren Kältemitteln?",
+        "answer": "Im bereitgestellten Kontext sind **keine Anforderungen zur elektrischen Ausrüstung von Kälteanlagen mit brennbaren Kältemitteln** enthalten. Daher kann ich dazu auf Basis des Kontexts keine belastbare Antwort geben. [Seite 33][Seite 15][Seite 25][Seite 39]"
+      },
+      {
+        "question": "Welche Sicherheitsabstände gelten bei Arbeiten in der Nähe von Bahn-Oberleitungen?",
+        "answer": "Im bereitgestellten Kontext werden Sicherheitsabstände zu **Bahn-Oberleitungen** nicht genannt. Es sind nur Schutzabstände für Arbeiten in der Nähe von **Freileitungen, Freiluftanlagen und aktiven Teilen elektrischer Anlagen** beschrieben. Daher kann ich die Frage anhand des Kontexts nicht beantwort"
+      },
+      {
+        "question": "Welche Besonderheiten gelten für elektrische Anlagen an Bord von Schiffen?",
+        "answer": "Im bereitgestellten Kontext werden keine Besonderheiten für elektrische Anlagen an Bord von Schiffen genannt. [Seite 25][Seite 26][Seite 46]\n\nIm Kontext wird nur allgemein erwähnt, dass die Besichtigung zusätzliche Anforderungen für Betriebsstätten, Räume und Anlagen besonderer Art nach der Normenre"
+      }
+    ]
   }
 }

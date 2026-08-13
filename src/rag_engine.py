@@ -116,10 +116,12 @@ class RAGEngine:
             returned
 
         Listing every retrieved passage would overstate the evidence: a one-sentence
-        answer citing a single clause would appear to rest on five documents. Filtering by
-        the citations in the answer means the list shown is the list the reader can check.
-        Falls back to all retrieved passages if the answer cites nothing parseable, so a
-        malformed citation never leaves the reader with no source at all.
+        answer citing a single clause would appear to rest on five documents, and an
+        answer that refuses would appear to rest on five documents while saying it has
+        nothing. So the list is exactly what the answer cites — and when the answer cites
+        nothing, it is empty. There is deliberately no fallback to the retrieved set:
+        showing passages the answer did not use is the overstatement this system exists
+        to avoid.
         """
         seen = {}
         for chunk in chunks:
@@ -127,11 +129,9 @@ class RAGEngine:
             key = (meta.get("source_file"), meta.get("page_number"))
             seen[key] = {"source_file": meta.get("source_file"), "page_number": meta.get("page_number")}
 
-        if answer:
+        if answer is not None:
             cited = self._parse_citations(answer)
-            used = {key: value for key, value in seen.items() if key in cited}
-            if used:
-                seen = used
+            seen = {key: value for key, value in seen.items() if key in cited}
 
         return sorted(seen.values(), key=lambda s: (s["source_file"] or "", s["page_number"] or 0))
 
