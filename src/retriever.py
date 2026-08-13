@@ -8,6 +8,9 @@ re-ranker around either of them, changes which object is constructed and nothing
 """
 from abc import ABC, abstractmethod
 
+import torch
+from sentence_transformers import CrossEncoder
+
 from config import RetrievalConfig
 from data_preprocessing import MultiModalPreprocessor
 
@@ -43,11 +46,6 @@ class DenseRetriever(Retriever):
     Pure semantic search: embed the query with BGE-M3 and take the nearest chunks by
     cosine similarity. This is the MVP baseline - the variant every later measurement
     is compared against.
-
-    Its known weakness is the reason hybrid search is being tested: an embedding model
-    represents meaning, not surface form. A query naming an exact designation such as
-    "DGUV Information 203-071" has no reliable advantage over a nearly identical
-    document, because the vectors of those two documents are almost the same.
     """
 
     def __init__(self, preprocessor: MultiModalPreprocessor):
@@ -66,6 +64,74 @@ class DenseRetriever(Retriever):
         return self.preprocessor.search_text(query, k=k)
 
 
+class RerankingRetriever(Retriever):
+    """
+    Re-scores the candidates of another retriever with a cross-encoder.
+
+    A bi-encoder like BGE-M3 embeds query and passage separately, so it can only compare
+    two summaries of meaning. A cross-encoder reads query and passage together in one
+    pass and can therefore judge whether the passage actually answers *this* question -
+    at the cost of one forward pass per candidate, which is why it can only be applied
+    to a shortlist rather than to the whole collection.
+
+    Deliberately a wrapper rather than a flag: re-ranking is a stage that operates on any
+    candidate list, whatever produced it. The same class will wrap the hybrid retriever
+    without a line changing here.
+    """
+
+    def __init__(
+        self,
+        base: Retriever,
+        model_name: str,
+        candidate_k: int,
+        batch_size: int = 8,
+        max_length: int = 512,
+    ):
+        """
+        base: The retriever supplying the candidates
+        model_name: Cross-encoder checkpoint
+        candidate_k: How many candidates to score, regardless of how many are requested.
+            Fixing this at construction keeps the measurement honest: the evaluation asks
+            for 20 results and the answer engine for 5, but both must re-rank the same
+            pool, or the two would not be comparing the same system.
+        max_length: Token budget per query-passage pair. 512 covers 99% of the chunks in
+            this corpus; raising it doubles the cost per pair for the benefit of a
+            handful of outliers, which on CPU is the difference between a run that
+            finishes and one that appears to hang.
+        """
+        self.base = base
+        self.candidate_k = candidate_k
+        self.batch_size = batch_size
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        self.model = CrossEncoder(model_name, max_length=max_length, device=device)
+
+    @property
+    def name(self) -> str:
+        return f"{self.base.name}+rerank"
+
+    def retrieve(self, query: str, k: int) -> list[dict]:
+        """
+        Fetch candidates from the base retriever, re-score them, return the best k.
+
+        Always fetches at least candidate_k, so asking for the top 5 still re-ranks the
+        full shortlist. The dense score is kept alongside the new one, which makes it
+        possible to see afterwards which chunks the re-ranker actually moved.
+        """
+        candidates = self.base.retrieve(query, max(k, self.candidate_k))
+        if not candidates:
+            return []
+
+        pairs = [(query, candidate["text"]) for candidate in candidates]
+        scores = self.model.predict(pairs, batch_size=self.batch_size, show_progress_bar=False)
+
+        for candidate, score in zip(candidates, scores):
+            candidate["dense_score"] = candidate["score"]
+            candidate["score"] = float(score)
+
+        candidates.sort(key=lambda candidate: candidate["score"], reverse=True)
+        return candidates[:k]
+
+
 def build_retriever(config: RetrievalConfig, preprocessor: MultiModalPreprocessor) -> Retriever:
     """
     Assemble the retrieval stack described by a config.
@@ -79,13 +145,13 @@ def build_retriever(config: RetrievalConfig, preprocessor: MultiModalPreprocesso
     retriever: Retriever = DenseRetriever(preprocessor)
 
     if config.use_bm25:
-        # Day 2: wrap dense + lexical in a HybridRetriever fusing both rankings via RRF.
         raise NotImplementedError("Hybrid search is not implemented yet.")
 
     if config.use_reranker:
-        # Day 2: wrap the above in a RerankingRetriever re-scoring candidates with a
-        # cross-encoder. Deliberately a wrapper, not a flag: re-ranking is a stage that
-        # operates on any candidate list, whatever produced it.
-        raise NotImplementedError("Re-ranking is not implemented yet.")
+        retriever = RerankingRetriever(
+            base=retriever,
+            model_name=config.reranker_model,
+            candidate_k=config.candidate_k,
+        )
 
     return retriever

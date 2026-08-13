@@ -72,7 +72,9 @@ class RetrievalEvaluator:
         per_document: dict[str, list[float]] = {}
         misses = []
 
-        for entry in goldset:
+        for position, entry in enumerate(goldset, start=1):
+            if position % 5 == 0 or position == 1:
+                print(f"  {variant} {position}/{len(goldset)}", flush=True)
             question = entry[field]
             started = time.perf_counter()
             results = self.retriever.retrieve(question, k=candidate_k)

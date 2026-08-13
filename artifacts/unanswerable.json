@@ -1,0 +1,100 @@
+[
+  {
+    "id": "unans-01",
+    "question": "Welche Mindestquerschnitte für Schutzleiter legt DIN VDE 0100-540 fest?",
+    "category": "din_vde_verweis",
+    "anchor_term": "0100-540",
+    "why_unanswerable": "Das DGUV-Regelwerk verweist auf die Normenreihe, gibt die Querschnittstabellen aber nicht wieder."
+  },
+  {
+    "id": "unans-02",
+    "question": "Welche Verlegearten unterscheidet DIN VDE 0100-520 für Kabel und Leitungen?",
+    "category": "din_vde_verweis",
+    "anchor_term": "verlegearten",
+    "why_unanswerable": "Verlegearten sind Norminhalt und kommen im Korpus nicht vor."
+  },
+  {
+    "id": "unans-03",
+    "question": "Wie wird der Querschnitt des Schutzleiters in Abhängigkeit vom Außenleiter bemessen?",
+    "category": "din_vde_verweis",
+    "anchor_term": "querschnitt des schutzleiters",
+    "why_unanswerable": "Bemessungsregel steht in DIN VDE 0100, nicht im DGUV-Regelwerk."
+  },
+  {
+    "id": "unans-04",
+    "question": "In welchen Abständen müssen Auffanggurte für Arbeiten in der Höhe geprüft werden?",
+    "category": "fachfremd",
+    "anchor_term": "auffanggurt",
+    "why_unanswerable": "Absturzschutz-PSA ist eine andere Fachdomäne, im Korpus nicht enthalten."
+  },
+  {
+    "id": "unans-05",
+    "question": "Welche Schutzmaßnahmen gelten, wenn bei Abbrucharbeiten Asbest gefunden wird?",
+    "category": "fachfremd",
+    "anchor_term": "asbest",
+    "why_unanswerable": "Gefahrstoffrecht, nicht Teil des elektrotechnischen Korpus."
+  },
+  {
+    "id": "unans-06",
+    "question": "Welche Anforderungen gelten für das Befahren von Windenergieanlagen?",
+    "category": "fachfremd",
+    "anchor_term": "windenergie",
+    "why_unanswerable": "Kein Dokument des Korpus behandelt Windenergieanlagen."
+  },
+  {
+    "id": "unans-07",
+    "question": "Dürfen Drohnen zur Inspektion betrieblicher Anlagen eingesetzt werden?",
+    "category": "fachfremd",
+    "anchor_term": "drohne",
+    "why_unanswerable": "Thema kommt im Korpus nicht vor."
+  },
+  {
+    "id": "unans-08",
+    "question": "Wann muss ein Laserschutzbeauftragter bestellt werden?",
+    "category": "fachfremd",
+    "anchor_term": "laser",
+    "why_unanswerable": "Laserschutz ist eine andere Fachdomäne."
+  },
+  {
+    "id": "unans-09",
+    "question": "Wer darf KNX-Installationen in der Gebäudeautomation in Betrieb nehmen?",
+    "category": "nah_dran",
+    "anchor_term": "knx",
+    "why_unanswerable": "Elektrotechnisch plausibel, in diesen 15 Dokumenten aber nicht behandelt."
+  },
+  {
+    "id": "unans-10",
+    "question": "In welchen Abständen sind Brandmeldeanlagen zu warten und zu prüfen?",
+    "category": "nah_dran",
+    "anchor_term": "brandmeldeanlage",
+    "why_unanswerable": "Elektrische Anlage, im Korpus jedoch nicht behandelt."
+  },
+  {
+    "id": "unans-11",
+    "question": "Welche Prüfpflichten bestehen für Rauchwarnmelder in Betriebsräumen?",
+    "category": "nah_dran",
+    "anchor_term": "rauchwarnmelder",
+    "why_unanswerable": "Im Korpus nicht behandelt."
+  },
+  {
+    "id": "unans-12",
+    "question": "Welche Anforderungen gelten für die elektrische Ausrüstung von Kälteanlagen mit brennbaren Kältemitteln?",
+    "category": "nah_dran",
+    "anchor_term": "kältemittel",
+    "why_unanswerable": "Kälteanlagen kommen im Korpus nicht vor."
+  },
+  {
+    "id": "unans-13",
+    "question": "Welche Sicherheitsabstände gelten bei Arbeiten in der Nähe von Bahn-Oberleitungen?",
+    "category": "nah_dran",
+    "anchor_term": "oberleitung",
+    "why_unanswerable": "Bahnspezifische Regelungen sind im Korpus nicht enthalten."
+  },
+  {
+    "id": "unans-14",
+    "question": "Welche Besonderheiten gelten für elektrische Anlagen an Bord von Schiffen?",
+    "category": "nah_dran",
+    "anchor_term": "schiff",
+    "why_unanswerable": "Elektrotechnisch, aber ausserhalb des Korpus."
+  }
+]

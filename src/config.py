@@ -73,13 +73,11 @@ class RetrievalConfig:
 # Deliberately unchanged from the original MVP: dense-only retrieval, top 5 chunks.
 MVP_BASELINE = RetrievalConfig(name="mvp_baseline")
 
-# Day 2 will add:
-#   HYBRID        = RetrievalConfig(name="hybrid", use_bm25=True)
-#   HYBRID_RERANK = RetrievalConfig(name="hybrid_rerank", use_bm25=True, use_reranker=True)
+# Same candidate pool, re-ordered by a cross-encoder. Recall@20 must therefore stay
+# identical to the baseline - if it moves, something other than the ranking changed.
+RERANK = RetrievalConfig(name="rerank", use_reranker=True)
 
-CONFIGS = {
-    MVP_BASELINE.name: MVP_BASELINE,
-}
+CONFIGS = {variant.name: variant for variant in (MVP_BASELINE, RERANK)}
 
 
 def get_config(name: str) -> RetrievalConfig:
