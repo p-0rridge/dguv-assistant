@@ -1,6 +1,5 @@
 import re
 from pathlib import Path
-from pygments.lexer import combined
 from spellchecker import SpellChecker
 
 
