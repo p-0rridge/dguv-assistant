@@ -6,12 +6,15 @@ The last question is deliberately unanswerable from this corpus: a system whose 
 point is refusing to invent has to be shown refusing, not only answering.
 
 Usage:
-    python src/demo.py
-    python src/demo.py --config rerank     # slower, but the better ranking
+    python src/demo.py                     # the prepared questions
+    python src/demo.py --then-ask          # prepared questions, then open for more
+    python src/demo.py --ask               # straight to the prompt
+    python src/demo.py --config rerank     # better ranking, ~30 s per question
 """
 import argparse
 import os
 import textwrap
+import time
 
 # Quiet the model libraries so the output is clean enough to screenshot.
 os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
@@ -40,31 +43,64 @@ QUESTIONS = [
 
 def render(index: int, question: str, result: dict) -> str:
     """Format one question and its answer as a block of plain text."""
-    lines = ["", "=" * WIDTH, f"FRAGE {index}", "-" * WIDTH]
+    lines = ["", "=" * WIDTH, f"QUESTION {index}", "-" * WIDTH]
     lines += textwrap.wrap(question, WIDTH)
-    lines += ["", "ANTWORT", "-" * WIDTH]
+    lines += ["", "ANSWER", "-" * WIDTH]
     for paragraph in result["answer"].split("\n"):
         lines += textwrap.wrap(paragraph, WIDTH) if paragraph.strip() else [""]
-    lines += ["", "QUELLEN (in der Antwort zitiert)", "-" * WIDTH]
+    lines += ["", "SOURCES (cited in the answer)", "-" * WIDTH]
     if result["sources"]:
         for source in result["sources"]:
-            lines.append(f"  · {source['source_file']}, Seite {source['page_number']}")
+            lines.append(f"  · {source['source_file']}, page {source['page_number']}")
     else:
         # A refusal cites nothing, so it has no sources. Showing what was retrieved
         # anyway would claim evidence the answer explicitly says it does not have.
-        lines.append("  keine - die Antwort stützt sich auf keine Textstelle")
+        lines.append("  none - the answer rests on no passage")
         retrieved = sorted(
             {(c["metadata"].get("source_file"), c["metadata"].get("page_number")) for c in result["chunks"]}
         )
-        lines += ["", "  abgerufen, aber nicht verwendet:"]
-        lines += [f"    {name}, Seite {page}" for name, page in retrieved]
+        lines += ["", "  retrieved but not used:"]
+        lines += [f"    {name}, page {page}" for name, page in retrieved]
     return "\n".join(lines)
 
 
+def ask_loop(engine: RAGEngine) -> None:
+    """
+    Take questions from the keyboard until the user stops.
+
+    Kept in the same process as the loaded models on purpose: starting a fresh run costs
+    about half a minute of model loading, which is fine in a script and unusable in front
+    of an audience.
+    """
+    print("\n" + "=" * WIDTH)
+    print("Ask a question. Empty line or Ctrl+C to quit.")
+    print("=" * WIDTH)
+    index = 0
+    while True:
+        try:
+            question = input("\n> ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print("\nDone.")
+            return
+        if not question:
+            print("Done.")
+            return
+        index += 1
+        started = time.perf_counter()
+        result = engine.answer(question)
+        elapsed = time.perf_counter() - started
+        print(render(index, question, result))
+        print(f"\n  ({elapsed:.1f} s)")
+
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Print example answers for the slides.")
+    parser = argparse.ArgumentParser(description="Print example answers, or ask your own.")
     parser.add_argument("--config", default="mvp_baseline")
     parser.add_argument("--corpus", choices=["full", "dev"], default="full")
+    parser.add_argument("--ask", action="store_true",
+                        help="skip the prepared questions and go straight to the prompt")
+    parser.add_argument("--then-ask", action="store_true",
+                        help="run the prepared questions, then stay open for more")
     args = parser.parse_args()
 
     variant = config.get_config(args.config)
@@ -75,6 +111,10 @@ def main() -> None:
         retriever=build_retriever(variant, preprocessor),
         top_k=variant.top_k,
     )
+
+    if args.ask:
+        ask_loop(engine)
+        return
 
     blocks = []
     for index, question in enumerate(QUESTIONS, start=1):
@@ -87,6 +127,9 @@ def main() -> None:
     out.write_text("\n".join(blocks) + "\n", encoding="utf-8")
     print("\n" + "=" * WIDTH)
     print(f"Also written to {out}")
+
+    if args.then_ask:
+        ask_loop(engine)
 
 
 if __name__ == "__main__":
