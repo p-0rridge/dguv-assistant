@@ -77,7 +77,18 @@ MVP_BASELINE = RetrievalConfig(name="mvp_baseline")
 # identical to the baseline - if it moves, something other than the ranking changed.
 RERANK = RetrievalConfig(name="rerank", use_reranker=True)
 
-CONFIGS = {variant.name: variant for variant in (MVP_BASELINE, RERANK)}
+# Dense and lexical retrieval fused by Reciprocal Rank Fusion. Unlike RERANK this
+# changes which chunks enter the candidate pool, so Recall@20 is expected to move -
+# here it is the measurement rather than the control.
+HYBRID = RetrievalConfig(name="hybrid", use_bm25=True)
+
+# Both improvements at once: fusion decides the shortlist, the cross-encoder orders it.
+HYBRID_RERANK = RetrievalConfig(name="hybrid_rerank", use_bm25=True, use_reranker=True)
+
+CONFIGS = {
+    variant.name: variant
+    for variant in (MVP_BASELINE, RERANK, HYBRID, HYBRID_RERANK)
+}
 
 
 def get_config(name: str) -> RetrievalConfig:

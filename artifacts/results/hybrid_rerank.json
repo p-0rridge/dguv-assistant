@@ -1,0 +1,117 @@
+{
+  "config": {
+    "name": "hybrid_rerank",
+    "top_k": 5,
+    "candidate_k": 20,
+    "use_bm25": true,
+    "use_reranker": true
+  },
+  "retriever": "hybrid+rerank",
+  "goldset_size": 64,
+  "variants": {
+    "colloquial": {
+      "questions": 64,
+      "recall_at_5": 0.921875,
+      "recall_at_20": 0.953125,
+      "mrr": 0.7694196428571428,
+      "ndcg_at_5": 0.8060493582322119,
+      "latency_ms_median": 23511.774700018577,
+      "per_document_recall": {
+        "100-001.pdf": 0.6,
+        "103-011.pdf": 1.0,
+        "103-012.pdf": 1.0,
+        "203-002.pdf": 1.0,
+        "203-004.pdf": 1.0,
+        "203-005.pdf": 1.0,
+        "203-006.pdf": 1.0,
+        "203-070.pdf": 1.0,
+        "203-071.pdf": 1.0,
+        "203-072.pdf": 1.0,
+        "203-077.pdf": 0.75,
+        "DGUV Vorschrift 1 „Grundsätze der Prävention“ - vorschrift1.pdf": 1.0,
+        "i-8590.pdf": 1.0,
+        "vorschrift3.pdf": 0.6,
+        "vorschrift3da.pdf": 1.0
+      },
+      "misses": [
+        {
+          "id": "gold-002",
+          "question": "Wann muss eine Gefährdung bewertet und sofort etwas gemacht werden?",
+          "expected": "100-001.pdf p.18",
+          "retrieved": [
+            "203-004.pdf p.23",
+            "i-8590.pdf p.13",
+            "100-001.pdf p.14"
+          ]
+        },
+        {
+          "id": "gold-056",
+          "question": "Wer darf elektrische Anlagen und Betriebsmittel aufbauen, ändern und instand halten?",
+          "expected": "vorschrift3.pdf p.4",
+          "retrieved": [
+            "203-002.pdf p.18",
+            "203-002.pdf p.5",
+            "203-004.pdf p.23"
+          ]
+        },
+        {
+          "id": "gold-058",
+          "question": "Wann müssen elektrische Anlagen und Geräte geprüft werden?",
+          "expected": "vorschrift3.pdf p.6",
+          "retrieved": [
+            "203-002.pdf p.42",
+            "203-071.pdf p.37",
+            "i-8590.pdf p.20"
+          ]
+        }
+      ]
+    },
+    "precise": {
+      "questions": 64,
+      "recall_at_5": 0.90625,
+      "recall_at_20": 0.96875,
+      "mrr": 0.7972160218253969,
+      "ndcg_at_5": 0.8193785513950943,
+      "latency_ms_median": 25056.533099967055,
+      "per_document_recall": {
+        "100-001.pdf": 1.0,
+        "103-011.pdf": 0.6666666666666666,
+        "103-012.pdf": 1.0,
+        "203-002.pdf": 0.75,
+        "203-004.pdf": 1.0,
+        "203-005.pdf": 1.0,
+        "203-006.pdf": 1.0,
+        "203-070.pdf": 1.0,
+        "203-071.pdf": 0.75,
+        "203-072.pdf": 0.75,
+        "203-077.pdf": 0.75,
+        "DGUV Vorschrift 1 „Grundsätze der Prävention“ - vorschrift1.pdf": 0.75,
+        "i-8590.pdf": 1.0,
+        "vorschrift3.pdf": 1.0,
+        "vorschrift3da.pdf": 1.0
+      },
+      "misses": [
+        {
+          "id": "gold-006",
+          "question": "Welche Anforderungen stellt die DGUV Regel 103-011 an die Arbeitsanweisung für Arbeiten unter Spannung, insbesondere zu PSA, Schutz- und Hilfsmitteln sowie Werkzeugen?",
+          "expected": "103-011.pdf p.8",
+          "retrieved": [
+            "103-012.pdf p.34",
+            "103-012.pdf p.24",
+            "vorschrift3da.pdf p.23"
+          ]
+        },
+        {
+          "id": "gold-036",
+          "question": "Welche Anforderungen nennt die DGUV Information 203-071 im Abschnitt 6.1.1 für das Besichtigen elektrischer Anlagen und Betriebsmittel?",
+          "expected": "203-071.pdf p.28",
+          "retrieved": [
+            "203-006.pdf p.7",
+            "203-072.pdf p.6",
+            "203-070.pdf p.6"
+          ]
+        }
+      ]
+    }
+  }
+}

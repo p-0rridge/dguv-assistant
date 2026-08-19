@@ -11,8 +11,10 @@ from abc import ABC, abstractmethod
 import torch
 from sentence_transformers import CrossEncoder
 
+import config as config_module
 from config import RetrievalConfig
 from data_preprocessing import MultiModalPreprocessor
+from hybrid_search import BM25Index, reciprocal_rank_fusion
 
 
 class Retriever(ABC):
@@ -62,6 +64,57 @@ class DenseRetriever(Retriever):
     def retrieve(self, query: str, k: int) -> list[dict]:
         """Return the k nearest chunks by cosine similarity, best first."""
         return self.preprocessor.search_text(query, k=k)
+
+
+class HybridRetriever(Retriever):
+    """
+    Runs dense and lexical retrieval side by side and fuses their rankings.
+
+    The two branches fail in different places, which is the entire premise. The dense
+    branch handles paraphrase - a question worded nothing like the regulation - and
+    blurs terms that differ by a few characters. The lexical branch does the opposite:
+    it matches "SELV" and not "PELV", and returns near-noise for a question containing
+    no distinctive term. Fusing them is a bet that these blind spots do not overlap.
+
+    Unlike re-ranking, this changes *which* passages reach the candidate pool, not only
+    their order. Recall@candidate_k is therefore no longer a control here - it is the
+    quantity under measurement.
+    """
+
+    def __init__(
+        self,
+        dense: Retriever,
+        index: BM25Index,
+        rrf_k: int = 60,
+        candidate_k: int = 20,
+    ):
+        """
+        dense: The semantic branch, normally a DenseRetriever
+        index: The lexical branch, built from the same chunks as the vector store
+        rrf_k: Fusion constant, from config
+        candidate_k: How deep each branch is read before fusing. Fixed at construction
+            for the same reason as in RerankingRetriever: the evaluation asks for 20
+            results and the answer engine for 5, and both have to fuse the same pool or
+            they are not the same system. Fusing only the top 5 of each would also give
+            the fusion almost nothing to work with - a passage cannot be rescued by
+            agreement if neither list was read far enough to contain it.
+        """
+        self.dense = dense
+        self.index = index
+        self.rrf_k = rrf_k
+        self.candidate_k = candidate_k
+
+    @property
+    def name(self) -> str:
+        return "hybrid"
+
+    def retrieve(self, query: str, k: int) -> list[dict]:
+        """Fetch from both branches, fuse by rank, return the best k."""
+        depth = max(k, self.candidate_k)
+        dense_results = self.dense.retrieve(query, depth)
+        lexical_results = self.index.search(query, depth)
+        fused = reciprocal_rank_fusion([dense_results, lexical_results], rrf_k=self.rrf_k)
+        return fused[:k]
 
 
 class RerankingRetriever(Retriever):
@@ -145,7 +198,12 @@ def build_retriever(config: RetrievalConfig, preprocessor: MultiModalPreprocesso
     retriever: Retriever = DenseRetriever(preprocessor)
 
     if config.use_bm25:
-        raise NotImplementedError("Hybrid search is not implemented yet.")
+        retriever = HybridRetriever(
+            dense=retriever,
+            index=BM25Index.from_file(config_module.CHUNKS_FILE),
+            rrf_k=config.rrf_k,
+            candidate_k=config.candidate_k,
+        )
 
     if config.use_reranker:
         retriever = RerankingRetriever(
