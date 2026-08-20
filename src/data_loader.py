@@ -1,113 +1,97 @@
+"""
+Extracts text and tables from PDFs with PyMuPDF.
+
+Page images were extracted here until it became clear they carried nothing: each one
+was stored with the placeholder text "[Complete page diagram page N]" and was reachable
+only through CLIP, which nothing queried. The figure captions - "Bild 2-1: Körperreaktion
+im Zeit-Stromdiagramm" and the like - are part of the page text and are indexed anyway,
+so removing the image branch cost no retrievable content and removed three dependencies.
+"""
 from pathlib import Path
+
 import fitz  # PyMuPDF
- 
- 
+
+
 class PDFDocumentLoader:
- 
-    def __init__(self, output_dir: Path | None = None):
-        """Output directory"""
-        self.output_dir = output_dir
- 
+    """Turns a PDF into a flat list of text and table elements, page by page."""
+
     def extract_pdf_elements(self, file_path: Path) -> list[dict]:
-        images_dir = None
-        if self.output_dir:
-            images_dir = self.output_dir / file_path.stem
-            images_dir.mkdir(parents=True, exist_ok=True)
- 
+        """
+        Extract every table and text block of a document.
+        returns: Elements with type, text and page_number, in reading order
+        """
         doc = fitz.open(file_path)
         processed_elements = []
- 
+
         for page_num, page in enumerate(doc, start=1):
             table_rects = []
- 
-            # extract tables as markdown
-            tabs = page.find_tables()
-            for tab_idx, tab in enumerate(tabs, start=1):
+
+            # Tables first, as markdown, so their structure survives into the chunk.
+            for tab in page.find_tables():
                 table_markdown = tab.to_markdown()
                 if table_markdown.strip():
                     processed_elements.append({
                         "type": "Table",
                         "text": table_markdown,
                         "page_number": page_num,
-                        "image_path": None,
                     })
                     table_rects.append(fitz.Rect(tab.bbox))
- 
-            # extract only text blocks
-            blocks = page.get_text("blocks")
-            for b in blocks:
-                block_rect = fitz.Rect(b[:4])
-                is_inside_table = any(block_rect.intersects(tr) for tr in table_rects)
- 
-                if not is_inside_table and b[4].strip():
+
+            # Then the text blocks, skipping any that sit inside a table already
+            # captured above - otherwise every table cell would be indexed twice, once
+            # as structured markdown and once as loose text.
+            for block in page.get_text("blocks"):
+                block_rect = fitz.Rect(block[:4])
+                inside_table = any(block_rect.intersects(rect) for rect in table_rects)
+                if not inside_table and block[4].strip():
                     processed_elements.append({
                         "type": "NarrativeText",
-                        "text": b[4].strip(),
+                        "text": block[4].strip(),
                         "page_number": page_num,
-                        "image_path": None,
                     })
- 
-            # if there are images: extract whole page screenshot
-            if self.output_dir:
-                # check if there are images or drawings on the page
-                has_images = len(page.get_images()) > 0
-                has_drawings = any(d["rect"].width > 150 and d["rect"].height > 150 for d in page.get_drawings())
- 
-                if has_images or has_drawings:
-                    pix = page.get_pixmap(matrix=fitz.Matrix(2.0, 2.0))
-                    img_filename = f"page_{page_num}_full.png"
-                    img_save_path = images_dir / img_filename
-                    pix.save(img_save_path)
- 
-                    processed_elements.append({
-                        "type": "Image",
-                        "text": f"[Complete page diagram page {page_num}]",
-                        "page_number": page_num,
-                        "image_path": str(img_save_path),
-                    })
- 
+
         doc.close()
         return processed_elements
- 
-    def categorize_elements(self, processed_elements: list[dict]) -> tuple[list[dict], list[dict], list[dict]]:
+
+    @staticmethod
+    def categorize_elements(processed_elements: list[dict]) -> tuple[list[dict], list[dict]]:
+        """Split elements into text and tables."""
         texts = [el for el in processed_elements if el["type"] == "NarrativeText"]
         tables = [el for el in processed_elements if el["type"] == "Table"]
-        images = [el for el in processed_elements if el["type"] == "Image"]
-        return texts, tables, images
- 
+        return texts, tables
+
     def load_single_pdf(self, file_path: Path) -> dict:
+        """Load one PDF into the structure the preprocessor expects."""
         processed_elements = self.extract_pdf_elements(file_path)
-        texts, tables, images = self.categorize_elements(processed_elements)
- 
-        full_text = "\n\n".join([el["text"] for el in processed_elements if el["text"]])
- 
+        texts, tables = self.categorize_elements(processed_elements)
+
         return {
             "file_name": file_path.name,
             "file_path": str(file_path),
-            "content": full_text,
+            "content": "\n\n".join(el["text"] for el in processed_elements if el["text"]),
             "elements": processed_elements,
             "texts": texts,
             "tables": tables,
-            "images": images,
         }
- 
+
     def load_directory(self, dir_path: Path) -> list[dict]:
-        """Recursively loads all PDF files within a given directory."""
+        """
+        Load every PDF below a directory.
+
+        rglob descends into subdirectories, so anything left in a folder under data/
+        is indexed too - that has caused an unrelated corpus to be measured before.
+        """
         documents = []
-        for pdf_file in dir_path.rglob("*.pdf"):
+        for pdf_file in sorted(dir_path.rglob("*.pdf")):
             if not pdf_file.name.startswith("."):
                 print(f"Processing: {pdf_file.name}")
-                doc_data = self.load_single_pdf(pdf_file)
-                documents.append(doc_data)
- 
+                documents.append(self.load_single_pdf(pdf_file))
         return documents
- 
- 
-if __name__ == "__main__":
- 
-    BASE_DIR = Path(__file__).resolve().parent.parent
-    SUB_DIR = BASE_DIR / "data"
- 
-    loader = PDFDocumentLoader(output_dir=BASE_DIR / "images")  # for now we work without images
-    docs = loader.load_directory(SUB_DIR)
 
+
+if __name__ == "__main__":
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    docs = PDFDocumentLoader().load_directory(BASE_DIR / "data")
+    print(f"\n{len(docs)} documents, "
+          f"{sum(len(d['texts']) for d in docs)} text blocks, "
+          f"{sum(len(d['tables']) for d in docs)} tables")

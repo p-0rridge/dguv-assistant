@@ -40,7 +40,7 @@ class IndexBuilder:
             print(f"Removing existing vector store at {self.chroma_dir}")
             shutil.rmtree(self.chroma_dir)
 
-        self.loader = PDFDocumentLoader(output_dir=config.IMAGES_DIR)
+        self.loader = PDFDocumentLoader()
         self.preprocessor = MultiModalPreprocessor(persist_dir=self.chroma_dir)
 
     def run(self) -> list[dict]:
@@ -79,7 +79,7 @@ class IndexBuilder:
         for chunk in chunks:
             by_document.setdefault(chunk["source_file"], []).append(chunk)
 
-        header = f"{'Document':<34}{'chunks':>8}{'tables':>8}{'images':>8}{'median tok':>12}{'at cap %':>10}"
+        header = f"{'Document':<34}{'chunks':>8}{'tables':>8}{'median tok':>12}{'at cap %':>10}"
         print("\n" + header)
         print("-" * len(header))
 
@@ -92,7 +92,6 @@ class IndexBuilder:
                 f"{source_file[:33]:<34}"
                 f"{len(document_chunks):>8}"
                 f"{sum(1 for c in document_chunks if c['type'] == 'Table'):>8}"
-                f"{sum(1 for c in document_chunks if c['type'] == 'Image'):>8}"
                 f"{statistics.median(token_counts):>12.0f}"
                 f"{100 * at_cap / len(token_counts):>9.0f}%"
             )

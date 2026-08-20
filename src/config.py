@@ -16,7 +16,6 @@ DATA_DIR = BASE_DIR / "data"              # full evaluation corpus
 DATA_DEV_DIR = BASE_DIR / "data_dev"      # 3 documents, for fast debugging only
 CHROMA_DIR = BASE_DIR / "chroma_db"
 CHROMA_DEV_DIR = BASE_DIR / "chroma_db_dev"
-IMAGES_DIR = BASE_DIR / "extracted_images"
 
 ARTIFACTS_DIR = BASE_DIR / "artifacts"
 CHUNKS_FILE = ARTIFACTS_DIR / "chunks.json"

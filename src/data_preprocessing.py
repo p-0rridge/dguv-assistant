@@ -4,11 +4,15 @@ import re
 from pathlib import Path
 
 import chromadb
-import open_clip
 import tiktoken
 import torch
-from PIL import Image
 from sentence_transformers import SentenceTransformer
+
+# The image branch was removed here. Page screenshots were extracted, embedded with
+# CLIP and stored in a second collection that nothing ever queried; their text was the
+# placeholder "[Complete page diagram page N]", so they were not reachable by a text
+# search either. Figure captions are part of the page text and stay indexed. Dropping
+# it removed open_clip, torchvision and PIL from the project.
 
 from data_loader import PDFDocumentLoader
 
@@ -25,28 +29,19 @@ class MultiModalPreprocessor:
         self,
         persist_dir: Path,
         text_collection_name: str = "text_chunks",
-        image_collection_name: str = "image_chunks",
         bge_model_name: str = "BAAI/bge-m3",
-        clip_model_name: str = "ViT-B-32",
-        clip_pretrained: str = "laion2b_s34b_b79k",
         max_text_chunk_tokens: int = 600,
         embed_batch_size: int = 16,
     ):
         """
-        Chunk extracted PDF elements and embed them with two separate models:
-        BGE-M3 for text/tables (long context, strong German support), and CLIP for
-        images (shared text/image space, so a text query can retrieve an image directly).
-        persist_dir: Local folder ChromaDB writes to on disk. No server, no network
-            port, nothing to install beyond the pip packages above.
-        embed_batch_size: How many chunks BGE-M3 encodes in one forward pass. Encoding
-            one chunk at a time wastes most of the available compute; batching is the
-            single cheapest speedup for a full re-index and changes nothing about the
-            resulting vectors.
+        Chunk extracted PDF elements and embed them with BGE-M3.
+        persist_dir: Local folder ChromaDB writes to. No server, no network port.
+        embed_batch_size: Chunks per forward pass. Batching is the cheapest speedup for
+            a full re-index and changes nothing about the resulting vectors.
 
-        Two embedding spaces on purpose: a single CLIP model would force text chunks
-        down to CLIP's ~77-token limit, far too small for structured legal text, while
-        BGE-M3 handles up to 8192 - so chunking can follow document structure instead
-        of the embedding model.
+        BGE-M3 rather than a shared text/image model: CLIP's ~77-token limit is far too
+        small for structured legal text, while BGE-M3 handles 8192 - so chunking can
+        follow document structure instead of the embedding model's limit.
         """
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.max_text_chunk_tokens = max_text_chunk_tokens
@@ -68,13 +63,6 @@ class MultiModalPreprocessor:
         else:
             self.text_embedding_dim = self.bge_model.get_sentence_embedding_dimension()
 
-        # --- Image embedding model (CLIP) ---
-        self.clip_model, _, self.clip_preprocess = open_clip.create_model_and_transforms(
-            clip_model_name, pretrained=clip_pretrained
-        )
-        self.clip_model = self.clip_model.to(self.device).eval()
-        self.clip_tokenizer = open_clip.get_tokenizer(clip_model_name)
-
         # --- Local, server-less vector store ---
         # hnsw:space="cosine" is set explicitly: Chroma otherwise defaults to squared L2.
         # With normalised embeddings both produce the same *ranking*, but only cosine
@@ -86,9 +74,6 @@ class MultiModalPreprocessor:
         client = chromadb.PersistentClient(path=str(persist_dir))
         self.text_collection = client.get_or_create_collection(
             name=text_collection_name, metadata={"hnsw:space": "cosine"}
-        )
-        self.image_collection = client.get_or_create_collection(
-            name=image_collection_name, metadata={"hnsw:space": "cosine"}
         )
 
     def _count_tokens(self, text: str) -> int:
@@ -165,32 +150,18 @@ class MultiModalPreprocessor:
             for el in tables
         ]
 
-    def chunk_images(self, images: list[dict]) -> list[dict]:
-        """Each extracted page image becomes its own chunk, keyed by its saved file path."""
-        return [
-            {
-                "type": "Image",
-                "text": el["text"],
-                "page_number": el["page_number"],
-                "image_path": el["image_path"],
-            }
-            for el in images
-        ]
-
     def build_chunks(self, document: dict) -> list[dict]:
         """
         Build the full set of chunks for a single loaded document.
         document: A dict as returned by PDFDocumentLoader.load_single_pdf
-        returns: List of chunk dicts (text/table/image), tagged with source_file and chunk_id
+        returns: Chunk dicts tagged with source_file and chunk_id
         """
         chunks = (
             self.chunk_text_elements(document["texts"])
             + self.chunk_tables(document["tables"])
-            + self.chunk_images(document["images"])
         )
         for chunk in chunks:
             chunk["source_file"] = document["file_name"]
-            chunk.setdefault("image_path", None)
             # Assigned here, once, so every downstream consumer (vector store, exported
             # JSON, lexical index, evaluation) refers to a chunk by the same key.
             chunk["chunk_id"] = self.make_chunk_id(chunk)
@@ -221,31 +192,15 @@ class MultiModalPreprocessor:
         )
         return [vector.tolist() for vector in embeddings]
 
-    def embed_image(self, image_path: str) -> list[float]:
-        """Embed an image file with the CLIP image tower."""
-        image = Image.open(image_path).convert("RGB")
-        image_tensor = self.clip_preprocess(image).unsqueeze(0).to(self.device)
-        with torch.no_grad():
-            features = self.clip_model.encode_image(image_tensor)
-            features = features / features.norm(dim=-1, keepdim=True)
-        return features[0].cpu().tolist()
-
     def generate_embeddings(self, chunks: list[dict]) -> list[dict]:
         """
-        Attach an embedding to each chunk: text/table chunks go through BGE-M3 in
-        batches, image chunks are embedded individually via CLIP.
-        chunks: List of chunk dicts, as returned by build_chunks
+        Attach a BGE-M3 embedding to every chunk.
         returns: The same list, with an added "embedding" key per chunk
         """
-        text_chunks = [c for c in chunks if c["type"] != "Image"]
-        if text_chunks:
-            vectors = self.embed_texts([c["text"] for c in text_chunks])
-            for chunk, vector in zip(text_chunks, vectors):
+        if chunks:
+            vectors = self.embed_texts([c["text"] for c in chunks])
+            for chunk, vector in zip(chunks, vectors):
                 chunk["embedding"] = vector
-
-        for chunk in chunks:
-            if chunk["type"] == "Image":
-                chunk["embedding"] = self.embed_image(chunk["image_path"])
         return chunks
 
     def add_to_vectorstore(self, chunks: list[dict]) -> None:
@@ -258,41 +213,24 @@ class MultiModalPreprocessor:
         add() plus random ids, every re-run silently doubled the collection - which
         quietly changes what "top 5 results" means and makes measurements incomparable.
         """
-        text_chunks = self._deduplicate([c for c in chunks if c["type"] in ("NarrativeText", "Table")])
-        image_chunks = self._deduplicate([c for c in chunks if c["type"] == "Image"])
+        text_chunks = self._deduplicate(chunks)
+        if not text_chunks:
+            return
 
-        if text_chunks:
-            self.text_collection.upsert(
-                ids=[c["chunk_id"] for c in text_chunks],
-                embeddings=[c["embedding"] for c in text_chunks],
-                documents=[c["text"] for c in text_chunks],
-                metadatas=[
-                    {
-                        "chunk_id": c["chunk_id"],
-                        "type": c["type"],
-                        "page_number": c["page_number"],
-                        "source_file": c["source_file"],
-                    }
-                    for c in text_chunks
-                ],
-            )
-
-        if image_chunks:
-            self.image_collection.upsert(
-                ids=[c["chunk_id"] for c in image_chunks],
-                embeddings=[c["embedding"] for c in image_chunks],
-                # Chroma documents must be text; the raw image lives at metadata["image_path"].
-                documents=[c["text"] for c in image_chunks],
-                metadatas=[
-                    {
-                        "chunk_id": c["chunk_id"],
-                        "page_number": c["page_number"],
-                        "source_file": c["source_file"],
-                        "image_path": c["image_path"],
-                    }
-                    for c in image_chunks
-                ],
-            )
+        self.text_collection.upsert(
+            ids=[c["chunk_id"] for c in text_chunks],
+            embeddings=[c["embedding"] for c in text_chunks],
+            documents=[c["text"] for c in text_chunks],
+            metadatas=[
+                {
+                    "chunk_id": c["chunk_id"],
+                    "type": c["type"],
+                    "page_number": c["page_number"],
+                    "source_file": c["source_file"],
+                }
+                for c in text_chunks
+            ],
+        )
 
     @staticmethod
     def _deduplicate(chunks: list[dict]) -> list[dict]:
@@ -365,7 +303,7 @@ if __name__ == "__main__":
     # build_index.py, which also writes artifacts/chunks.json.
     BASE_DIR = Path(__file__).resolve().parent.parent
 
-    loader = PDFDocumentLoader(output_dir=BASE_DIR / "extracted_images")
+    loader = PDFDocumentLoader()
     preprocessor = MultiModalPreprocessor(persist_dir=BASE_DIR / "chroma_db")
 
     docs = loader.load_directory(BASE_DIR / "data")
