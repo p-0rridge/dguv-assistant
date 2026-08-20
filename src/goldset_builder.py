@@ -134,14 +134,15 @@ class GoldsetBuilder:
         letters = sum(character.isalpha() for character in text)
         return letters / len(text) > 0.55
 
-    def select_chunks(self, chunks: list[dict]) -> list[dict]:
+    def select_chunks(self, chunks: list[dict], exclude: set[str] = frozenset()) -> list[dict]:
         """
         Pick a stratified sample: up to per_document usable chunks from each document.
-        Returns them sorted by document and page so the generated file reads sensibly.
+        exclude: chunk ids already in the gold set, so an extension adds new passages
+            instead of resampling the old ones.
         """
         by_document: dict[str, list[dict]] = {}
         for chunk in chunks:
-            if self.is_usable(chunk):
+            if self.is_usable(chunk) and chunk["chunk_id"] not in exclude:
                 by_document.setdefault(chunk["source_file"], []).append(chunk)
 
         selected = []
@@ -230,15 +231,32 @@ class GoldsetBuilder:
             return "both questions are identical"
         return None
 
-    def build(self, chunks_file: Path, output_file: Path) -> list[dict]:
-        """Run the whole process and write the gold set to disk."""
+    def build(self, chunks_file: Path, output_file: Path, extend: bool = False) -> list[dict]:
+        """
+        Run the whole process and write the gold set to disk.
+
+        extend: keep the existing entries and add new ones for passages not yet used.
+            Adding rather than regenerating is what keeps earlier measurements
+            comparable - a regenerated set would be a different test, and every number
+            recorded against the old one would have to be thrown away. It also matters
+            for the reason the set is being extended at all: below roughly six
+            disagreeing questions no paired comparison can reach significance however
+            clean the result, so the set has to grow rather than change.
+        """
         chunks = self.load_chunks(chunks_file)
         print(f"Loaded {len(chunks)} chunks from {chunks_file}")
 
-        selected = self.select_chunks(chunks)
+        existing: list[dict] = []
+        if extend and output_file.exists():
+            with output_file.open(encoding="utf-8") as handle:
+                existing = json.load(handle)
+            print(f"Extending the existing gold set of {len(existing)} entries")
+
+        used = {entry["chunk_id"] for entry in existing}
+        selected = self.select_chunks(chunks, exclude=used)
         print(f"Selected {len(selected)} chunks across {len({c['source_file'] for c in selected})} documents\n")
 
-        entries = []
+        entries = list(existing)
         for index, chunk in enumerate(selected, start=1):
             print(f"[{index}/{len(selected)}] {chunk['source_file']} p.{chunk['page_number']}")
             entry = self.generate_entry(chunk, entry_id=f"gold-{len(entries) + 1:03d}")
@@ -249,8 +267,9 @@ class GoldsetBuilder:
         with output_file.open("w", encoding="utf-8") as handle:
             json.dump(entries, handle, ensure_ascii=False, indent=2)
 
-        rejected = len(selected) - len(entries)
-        print(f"\nWrote {len(entries)} entries to {output_file} ({rejected} rejected)")
+        added = len(entries) - len(existing)
+        rejected = len(selected) - added
+        print(f"\nWrote {len(entries)} entries to {output_file} (+{added} new, {rejected} rejected)")
         print(f"That is {2 * len(entries)} test questions: one colloquial and one precise per entry.")
         return entries
 
@@ -259,10 +278,12 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Build the evaluation gold set.")
     parser.add_argument("--per-document", type=int, default=5)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--extend", action="store_true",
+                        help="add to the existing gold set instead of replacing it")
     args = parser.parse_args()
 
     builder = GoldsetBuilder(per_document=args.per_document, seed=args.seed)
-    builder.build(config.CHUNKS_FILE, config.GOLDSET_FILE)
+    builder.build(config.CHUNKS_FILE, config.GOLDSET_FILE, extend=args.extend)
 
 
 if __name__ == "__main__":

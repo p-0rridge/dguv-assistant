@@ -71,6 +71,12 @@ class RetrievalEvaluator:
         recall_top, recall_candidate, ranks, ndcgs, latencies = [], [], [], [], []
         per_document: dict[str, list[float]] = {}
         misses = []
+        # Per-question outcomes, kept so two runs can be compared question by question.
+        # An averaged recall cannot answer whether a difference between two variants is
+        # larger than chance: +7.8 points is five questions out of 64, and the interval
+        # around a single rate that size is wider than the difference itself. A paired
+        # test needs to know *which* questions moved, and only this list records that.
+        per_question = []
 
         for position, entry in enumerate(goldset, start=1):
             if position % 5 == 0 or position == 1:
@@ -88,6 +94,14 @@ class RetrievalEvaluator:
             ranks.append(reciprocal_rank(hits))
             ndcgs.append(ndcg_at_k(hits, top_k))
             per_document.setdefault(entry["source_file"], []).append(hit_at_top)
+
+            rank = next((position for position, hit in enumerate(hits, start=1) if hit), None)
+            per_question.append({
+                "id": entry["id"],
+                f"hit_at_{top_k}": bool(hit_at_top),
+                f"hit_at_{candidate_k}": any(hits),
+                "rank": rank,
+            })
 
             if not any(hits):
                 misses.append({
@@ -110,6 +124,7 @@ class RetrievalEvaluator:
             "per_document_recall": {
                 source: mean(values) for source, values in sorted(per_document.items())
             },
+            "per_question": per_question,
             "misses": misses,
         }
 
