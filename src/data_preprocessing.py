@@ -31,6 +31,7 @@ class MultiModalPreprocessor:
         text_collection_name: str = "text_chunks",
         bge_model_name: str = "BAAI/bge-m3",
         max_text_chunk_tokens: int = 600,
+        min_chunk_chars: int = 300,
         embed_batch_size: int = 16,
     ):
         """
@@ -45,6 +46,11 @@ class MultiModalPreprocessor:
         """
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.max_text_chunk_tokens = max_text_chunk_tokens
+        # 31 % of the chunks in the previous index were shorter than this and 9 % were
+        # under 50 characters - fragments that occupy a place in the top five without
+        # being able to answer anything. The same threshold is what goldset_builder
+        # already used to decide a passage was too short to ask a question about.
+        self.min_chunk_chars = min_chunk_chars
         self.embed_batch_size = embed_batch_size
 
         # Token counting for chunk sizing. This is a fast, good-enough estimate; it is not
@@ -124,9 +130,14 @@ class MultiModalPreprocessor:
             is_new_section = bool(SECTION_HEADING_PATTERN.match(el_text))
 
             # Start a new chunk if this element opens a new section, or the buffer
-            # would otherwise exceed the target token budget.
+            # would otherwise exceed the target token budget. A heading only breaks
+            # once the buffer holds enough to stand on its own: without that condition,
+            # a run of consecutive headings produces a chunk per heading, each too
+            # short to answer anything and each competing for a place in the top five.
+            buffer_length = sum(len(text) for text in buffer_texts)
             would_overflow = buffer_tokens + el_tokens > self.max_text_chunk_tokens
-            if buffer_texts and (is_new_section or would_overflow):
+            breaks_here = would_overflow or (is_new_section and buffer_length >= self.min_chunk_chars)
+            if buffer_texts and breaks_here:
                 flush_buffer()
                 buffer_texts, buffer_tokens, buffer_page = [], 0, None
 
@@ -141,7 +152,41 @@ class MultiModalPreprocessor:
                 buffer_texts, buffer_tokens, buffer_page = [], 0, None
 
         flush_buffer()
-        return chunks
+        return self._merge_short_chunks(chunks)
+
+    def _merge_short_chunks(self, chunks: list[dict]) -> list[dict]:
+        """
+        Fold chunks below min_chunk_chars into the one that follows them.
+
+        Forward rather than backward: a fragment is almost always a heading or an
+        introductory line, which belongs to the section it opens, not to the one that
+        just ended. The merged chunk keeps the earlier page number, so a citation
+        points at where the passage starts.
+        """
+        merged: list[dict] = []
+        pending: dict | None = None
+
+        for chunk in chunks:
+            if pending:
+                chunk = {
+                    "type": chunk["type"],
+                    "text": f"{pending['text']}\n\n{chunk['text']}",
+                    "page_number": pending["page_number"],
+                }
+                pending = None
+            if len(chunk["text"]) < self.min_chunk_chars:
+                pending = chunk
+                continue
+            merged.append(chunk)
+
+        # A trailing fragment has nothing to merge into; it joins the previous chunk
+        # rather than being dropped, since discarding text is not this method's job.
+        if pending:
+            if merged:
+                merged[-1]["text"] += f"\n\n{pending['text']}"
+            else:
+                merged.append(pending)
+        return merged
 
     def chunk_tables(self, tables: list[dict]) -> list[dict]:
         """Each table becomes its own chunk; tables are never merged with surrounding text."""

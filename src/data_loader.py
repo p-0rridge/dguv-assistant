@@ -11,13 +11,35 @@ from pathlib import Path
 
 import fitz  # PyMuPDF
 
+from data_cleaning import TextCleaner
+
 
 class PDFDocumentLoader:
     """Turns a PDF into a flat list of text and table elements, page by page."""
 
+    def __init__(self, cleaner: TextCleaner | None = None, drop_boilerplate: bool = True):
+        """
+        cleaner: Repairs typesetting artefacts. Applied here rather than further down
+            because this is the one place raw PDF text enters the system - everything
+            after it (chunking, token counts, embeddings, the lexical index, the gold
+            set and the quotes shown to a reader) then sees the same repaired text.
+        drop_boilerplate: Discard tables of contents, imprints and numbering blocks.
+        """
+        self.cleaner = cleaner or TextCleaner()
+        self.drop_boilerplate = drop_boilerplate
+
+    def _accept(self, text: str, element_type: str) -> str | None:
+        """Clean a block and return it, or None if it carries no content."""
+        cleaned = self.cleaner.clean(text)
+        if not cleaned:
+            return None
+        if self.drop_boilerplate and self.cleaner.is_boilerplate(cleaned, element_type):
+            return None
+        return cleaned
+
     def extract_pdf_elements(self, file_path: Path) -> list[dict]:
         """
-        Extract every table and text block of a document.
+        Extract every table and text block of a document, cleaned.
         returns: Elements with type, text and page_number, in reading order
         """
         doc = fitz.open(file_path)
@@ -28,25 +50,29 @@ class PDFDocumentLoader:
 
             # Tables first, as markdown, so their structure survives into the chunk.
             for tab in page.find_tables():
-                table_markdown = tab.to_markdown()
-                if table_markdown.strip():
+                text = self._accept(tab.to_markdown(), "Table")
+                # The rectangle is recorded even when the table itself is discarded, so
+                # its cells are not picked up again as loose text below.
+                table_rects.append(fitz.Rect(tab.bbox))
+                if text:
                     processed_elements.append({
                         "type": "Table",
-                        "text": table_markdown,
+                        "text": text,
                         "page_number": page_num,
                     })
-                    table_rects.append(fitz.Rect(tab.bbox))
 
             # Then the text blocks, skipping any that sit inside a table already
             # captured above - otherwise every table cell would be indexed twice, once
             # as structured markdown and once as loose text.
             for block in page.get_text("blocks"):
                 block_rect = fitz.Rect(block[:4])
-                inside_table = any(block_rect.intersects(rect) for rect in table_rects)
-                if not inside_table and block[4].strip():
+                if any(block_rect.intersects(rect) for rect in table_rects):
+                    continue
+                text = self._accept(block[4], "NarrativeText")
+                if text:
                     processed_elements.append({
                         "type": "NarrativeText",
-                        "text": block[4].strip(),
+                        "text": text,
                         "page_number": page_num,
                     })
 
