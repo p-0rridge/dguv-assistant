@@ -51,7 +51,8 @@ def render(index: int, question: str, result: dict) -> str:
     lines += ["", "SOURCES (cited in the answer)", "-" * WIDTH]
     if result["sources"]:
         for source in result["sources"]:
-            lines.append(f"  · {source['source_file']}, page {source['page_number']}")
+            lines.append(f"  · {source.get('title') or source['source_file']}")
+            lines.append(f"      page {source['page_number']}  ({source['source_file']})")
     else:
         # A refusal cites nothing, so it has no sources. Showing what was retrieved
         # anyway would claim evidence the answer explicitly says it does not have.

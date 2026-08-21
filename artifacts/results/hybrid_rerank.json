@@ -7,51 +7,859 @@
     "use_reranker": true
   },
   "retriever": "hybrid+rerank",
-  "goldset_size": 64,
+  "goldset_size": 136,
   "variants": {
     "colloquial": {
-      "questions": 64,
-      "recall_at_5": 0.921875,
-      "recall_at_20": 0.953125,
-      "mrr": 0.7694196428571428,
-      "ndcg_at_5": 0.8060493582322119,
-      "latency_ms_median": 23511.774700018577,
+      "questions": 136,
+      "recall_at_5": 0.9117647058823529,
+      "recall_at_20": 0.9558823529411765,
+      "mrr": 0.747578197945845,
+      "ndcg_at_5": 0.7857154646156382,
+      "latency_ms_median": 21332.63885002816,
       "per_document_recall": {
-        "100-001.pdf": 0.6,
+        "100-001.pdf": 0.8181818181818182,
         "103-011.pdf": 1.0,
-        "103-012.pdf": 1.0,
+        "103-012.pdf": 0.9,
         "203-002.pdf": 1.0,
         "203-004.pdf": 1.0,
-        "203-005.pdf": 1.0,
+        "203-005.pdf": 0.875,
         "203-006.pdf": 1.0,
-        "203-070.pdf": 1.0,
-        "203-071.pdf": 1.0,
-        "203-072.pdf": 1.0,
-        "203-077.pdf": 0.75,
+        "203-070.pdf": 0.8888888888888888,
+        "203-071.pdf": 0.875,
+        "203-072.pdf": 0.8,
+        "203-077.pdf": 0.8,
         "DGUV Vorschrift 1 „Grundsätze der Prävention“ - vorschrift1.pdf": 1.0,
         "i-8590.pdf": 1.0,
-        "vorschrift3.pdf": 0.6,
-        "vorschrift3da.pdf": 1.0
+        "vorschrift3.pdf": 0.8,
+        "vorschrift3da.pdf": 0.9
       },
+      "per_question": [
+        {
+          "id": "gold-001",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-002",
+          "hit_at_5": false,
+          "hit_at_20": false,
+          "rank": null
+        },
+        {
+          "id": "gold-003",
+          "hit_at_5": false,
+          "hit_at_20": true,
+          "rank": 9
+        },
+        {
+          "id": "gold-004",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-005",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-006",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-007",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-008",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-009",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-010",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 4
+        },
+        {
+          "id": "gold-011",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 3
+        },
+        {
+          "id": "gold-012",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-013",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-014",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-015",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-016",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-017",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-018",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-019",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-020",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-021",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-022",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-023",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-024",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-025",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-026",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-027",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-028",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-029",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-030",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-031",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-032",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-033",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-034",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-035",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-036",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 3
+        },
+        {
+          "id": "gold-037",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-038",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 4
+        },
+        {
+          "id": "gold-039",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-040",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-041",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-042",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-043",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-044",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-045",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-046",
+          "hit_at_5": false,
+          "hit_at_20": true,
+          "rank": 9
+        },
+        {
+          "id": "gold-047",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-048",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-049",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-050",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-051",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-052",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 3
+        },
+        {
+          "id": "gold-053",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-054",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-055",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 3
+        },
+        {
+          "id": "gold-056",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-057",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-058",
+          "hit_at_5": false,
+          "hit_at_20": false,
+          "rank": null
+        },
+        {
+          "id": "gold-059",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 3
+        },
+        {
+          "id": "gold-060",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-061",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-062",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-063",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-064",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-065",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-066",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-067",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-068",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-069",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 3
+        },
+        {
+          "id": "gold-070",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-071",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-072",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-073",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-074",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-075",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-076",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-077",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-078",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-079",
+          "hit_at_5": false,
+          "hit_at_20": true,
+          "rank": 12
+        },
+        {
+          "id": "gold-080",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-081",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 3
+        },
+        {
+          "id": "gold-082",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-083",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-084",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-085",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-086",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-087",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-088",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-089",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 4
+        },
+        {
+          "id": "gold-090",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 3
+        },
+        {
+          "id": "gold-091",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-092",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-093",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-094",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 4
+        },
+        {
+          "id": "gold-095",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-096",
+          "hit_at_5": false,
+          "hit_at_20": false,
+          "rank": null
+        },
+        {
+          "id": "gold-097",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-098",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-099",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 4
+        },
+        {
+          "id": "gold-100",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-101",
+          "hit_at_5": false,
+          "hit_at_20": true,
+          "rank": 7
+        },
+        {
+          "id": "gold-102",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-103",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-104",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-105",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-106",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-107",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-108",
+          "hit_at_5": false,
+          "hit_at_20": true,
+          "rank": 9
+        },
+        {
+          "id": "gold-109",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-110",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-111",
+          "hit_at_5": false,
+          "hit_at_20": false,
+          "rank": null
+        },
+        {
+          "id": "gold-112",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-113",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-114",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-115",
+          "hit_at_5": false,
+          "hit_at_20": false,
+          "rank": null
+        },
+        {
+          "id": "gold-116",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-117",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-118",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-119",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-120",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-121",
+          "hit_at_5": false,
+          "hit_at_20": false,
+          "rank": null
+        },
+        {
+          "id": "gold-122",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-123",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-124",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-125",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-126",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-127",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-128",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-129",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 3
+        },
+        {
+          "id": "gold-130",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-131",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 4
+        },
+        {
+          "id": "gold-132",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-133",
+          "hit_at_5": false,
+          "hit_at_20": true,
+          "rank": 9
+        },
+        {
+          "id": "gold-134",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-135",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-136",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        }
+      ],
       "misses": [
         {
           "id": "gold-002",
           "question": "Wann muss eine Gefährdung bewertet und sofort etwas gemacht werden?",
           "expected": "100-001.pdf p.18",
           "retrieved": [
+            "100-001.pdf p.17",
             "203-004.pdf p.23",
-            "i-8590.pdf p.13",
             "100-001.pdf p.14"
-          ]
-        },
-        {
-          "id": "gold-056",
-          "question": "Wer darf elektrische Anlagen und Betriebsmittel aufbauen, ändern und instand halten?",
-          "expected": "vorschrift3.pdf p.4",
-          "retrieved": [
-            "203-002.pdf p.18",
-            "203-002.pdf p.5",
-            "203-004.pdf p.23"
           ]
         },
         {
@@ -63,42 +871,900 @@
             "203-071.pdf p.37",
             "i-8590.pdf p.20"
           ]
+        },
+        {
+          "id": "gold-096",
+          "question": "Welche DGUV-Infos werden für das Prüfen und Organisieren wiederkehrender Prüfungen von ortsveränderlichen elektrischen Arbeitsmitteln genannt?",
+          "expected": "203-005.pdf p.19",
+          "retrieved": [
+            "203-072.pdf p.7",
+            "203-070.pdf p.5",
+            "203-071.pdf p.27"
+          ]
+        },
+        {
+          "id": "gold-111",
+          "question": "Worauf muss man bei der Prüfung einer elektrischen Anlage achten, damit man den Zustand wirklich beurteilen kann?",
+          "expected": "203-072.pdf p.14",
+          "retrieved": [
+            "203-071.pdf p.19",
+            "203-071.pdf p.37",
+            "203-072.pdf p.19"
+          ]
+        },
+        {
+          "id": "gold-115",
+          "question": "Welche Norm nennt das DGUV-Dokument für das Prüfen und Instandhalten von elektrischen Anlagen in explosionsgefährdeten Bereichen?",
+          "expected": "203-072.pdf p.125",
+          "retrieved": [
+            "203-072.pdf p.86",
+            "203-002.pdf p.5",
+            "203-005.pdf p.5"
+          ]
+        },
+        {
+          "id": "gold-121",
+          "question": "Wann darf man bei der Kältemaschine mit dem Schaltschrank trotz möglichem Lichtbogen arbeiten?",
+          "expected": "203-077.pdf p.72",
+          "retrieved": [
+            "203-077.pdf p.71",
+            "i-8590.pdf p.37",
+            "i-8590.pdf p.38"
+          ]
         }
       ]
     },
     "precise": {
-      "questions": 64,
-      "recall_at_5": 0.90625,
-      "recall_at_20": 0.96875,
-      "mrr": 0.7972160218253969,
-      "ndcg_at_5": 0.8193785513950943,
-      "latency_ms_median": 25056.533099967055,
+      "questions": 136,
+      "recall_at_5": 0.9485294117647058,
+      "recall_at_20": 0.9779411764705882,
+      "mrr": 0.8252538515406163,
+      "ndcg_at_5": 0.8538872095731866,
+      "latency_ms_median": 20470.665349974297,
       "per_document_recall": {
         "100-001.pdf": 1.0,
-        "103-011.pdf": 0.6666666666666666,
+        "103-011.pdf": 0.8888888888888888,
         "103-012.pdf": 1.0,
-        "203-002.pdf": 0.75,
+        "203-002.pdf": 0.9,
         "203-004.pdf": 1.0,
         "203-005.pdf": 1.0,
         "203-006.pdf": 1.0,
-        "203-070.pdf": 1.0,
-        "203-071.pdf": 0.75,
-        "203-072.pdf": 0.75,
-        "203-077.pdf": 0.75,
-        "DGUV Vorschrift 1 „Grundsätze der Prävention“ - vorschrift1.pdf": 0.75,
+        "203-070.pdf": 0.8888888888888888,
+        "203-071.pdf": 0.875,
+        "203-072.pdf": 1.0,
+        "203-077.pdf": 0.9,
+        "DGUV Vorschrift 1 „Grundsätze der Prävention“ - vorschrift1.pdf": 0.875,
         "i-8590.pdf": 1.0,
         "vorschrift3.pdf": 1.0,
-        "vorschrift3da.pdf": 1.0
+        "vorschrift3da.pdf": 0.9
       },
+      "per_question": [
+        {
+          "id": "gold-001",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-002",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-003",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-004",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-005",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-006",
+          "hit_at_5": false,
+          "hit_at_20": false,
+          "rank": null
+        },
+        {
+          "id": "gold-007",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-008",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-009",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-010",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-011",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-012",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-013",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-014",
+          "hit_at_5": false,
+          "hit_at_20": true,
+          "rank": 8
+        },
+        {
+          "id": "gold-015",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-016",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-017",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-018",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-019",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-020",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-021",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-022",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-023",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-024",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-025",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-026",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-027",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-028",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-029",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-030",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-031",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 3
+        },
+        {
+          "id": "gold-032",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-033",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-034",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-035",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-036",
+          "hit_at_5": false,
+          "hit_at_20": false,
+          "rank": null
+        },
+        {
+          "id": "gold-037",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-038",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-039",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 3
+        },
+        {
+          "id": "gold-040",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-041",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-042",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-043",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-044",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-045",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-046",
+          "hit_at_5": false,
+          "hit_at_20": true,
+          "rank": 10
+        },
+        {
+          "id": "gold-047",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-048",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-049",
+          "hit_at_5": false,
+          "hit_at_20": true,
+          "rank": 7
+        },
+        {
+          "id": "gold-050",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-051",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-052",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 4
+        },
+        {
+          "id": "gold-053",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-054",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-055",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-056",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 3
+        },
+        {
+          "id": "gold-057",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-058",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-059",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-060",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-061",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-062",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-063",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-064",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-065",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-066",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-067",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-068",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-069",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-070",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-071",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-072",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-073",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-074",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-075",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-076",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 4
+        },
+        {
+          "id": "gold-077",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-078",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-079",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-080",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-081",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-082",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 3
+        },
+        {
+          "id": "gold-083",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-084",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-085",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-086",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-087",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-088",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-089",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-090",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-091",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-092",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-093",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-094",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-095",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-096",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 3
+        },
+        {
+          "id": "gold-097",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-098",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-099",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-100",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-101",
+          "hit_at_5": false,
+          "hit_at_20": false,
+          "rank": null
+        },
+        {
+          "id": "gold-102",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-103",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-104",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-105",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-106",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-107",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-108",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 3
+        },
+        {
+          "id": "gold-109",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-110",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-111",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-112",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-113",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-114",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-115",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-116",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-117",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-118",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-119",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-120",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-121",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 5
+        },
+        {
+          "id": "gold-122",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-123",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-124",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 2
+        },
+        {
+          "id": "gold-125",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-126",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-127",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-128",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-129",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-130",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-131",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-132",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-133",
+          "hit_at_5": false,
+          "hit_at_20": true,
+          "rank": 6
+        },
+        {
+          "id": "gold-134",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-135",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        },
+        {
+          "id": "gold-136",
+          "hit_at_5": true,
+          "hit_at_20": true,
+          "rank": 1
+        }
+      ],
       "misses": [
         {
           "id": "gold-006",
           "question": "Welche Anforderungen stellt die DGUV Regel 103-011 an die Arbeitsanweisung für Arbeiten unter Spannung, insbesondere zu PSA, Schutz- und Hilfsmitteln sowie Werkzeugen?",
           "expected": "103-011.pdf p.8",
           "retrieved": [
+            "203-077.pdf p.8",
             "103-012.pdf p.34",
-            "103-012.pdf p.24",
-            "vorschrift3da.pdf p.23"
+            "103-012.pdf p.24"
           ]
         },
         {
@@ -106,9 +1772,19 @@
           "question": "Welche Anforderungen nennt die DGUV Information 203-071 im Abschnitt 6.1.1 für das Besichtigen elektrischer Anlagen und Betriebsmittel?",
           "expected": "203-071.pdf p.28",
           "retrieved": [
-            "203-006.pdf p.7",
-            "203-072.pdf p.6",
-            "203-070.pdf p.6"
+            "203-072.pdf p.7",
+            "203-071.pdf p.6",
+            "203-006.pdf p.8"
+          ]
+        },
+        {
+          "id": "gold-101",
+          "question": "Wie werden elektrische Betriebsmittel in der DGUV Information 203-070 in Abschnitt 2.8 definiert?",
+          "expected": "203-070.pdf p.9",
+          "retrieved": [
+            "203-071.pdf p.8",
+            "203-072.pdf p.11",
+            "203-005.pdf p.5"
           ]
         }
       ]

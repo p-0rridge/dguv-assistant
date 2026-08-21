@@ -26,11 +26,10 @@ from dotenv import find_dotenv, load_dotenv
 from langchain_openai import ChatOpenAI
 
 import config
+from config import GOLDSET_MODEL
 from metrics import normalise
 
 load_dotenv(find_dotenv())
-
-DEFAULT_MODEL = "gpt-5.4-mini"
 
 # Matches table-of-contents style lines ("1.2 Anwendungsbereich ....... 7") and pages
 # that are mostly dot leaders. Such chunks contain headings but no answerable content.
@@ -79,7 +78,7 @@ class GoldsetBuilder:
 
     def __init__(
         self,
-        model: str = DEFAULT_MODEL,
+        model: str = GOLDSET_MODEL,
         openai_api_key: str | None = None,
         per_document: int = 5,
         min_chars: int = 300,
