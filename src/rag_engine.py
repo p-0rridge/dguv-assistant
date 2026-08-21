@@ -7,20 +7,27 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
+from config import ANSWER_MODEL
+from document_titles import load_titles
 from retriever import Retriever
 
 load_dotenv(find_dotenv())
 
-# Chosen deliberately for this MVP: grounded question-answering over already-retrieved
-# context is a comparatively easy task for an LLM (mostly reading comprehension plus
-# citation, not open-ended reasoning), so a lightweight, inexpensive model is enough -
-# no need for a frontier-tier model here. Check OpenAI's current model list before
-# running this, since exact model ids get renamed/replaced over time; gpt-4.1-mini is a
-# solid, well-established fallback if the id below is no longer valid.
-DEFAULT_MODEL = "gpt-5.4-mini"
-
 # Matches the citation form the system prompt asks for: [203-071.pdf, Seite 12].
 CITATION_PATTERN = re.compile(r"\[([^\[\]]+?)\s*,\s*Seite\s*(\d+)\s*\]", re.IGNORECASE)
+
+# The model marks its own refusals, rather than the evaluation guessing from free text.
+#
+# Detecting refusals by matching phrases does not work, and that is measured rather than
+# assumed: on 14 unanswerable questions the system refused all 14, and a list of seven
+# refusal phrases recognised 2. Extending it to eleven recognised 8 - the misses were
+# "diese Frage" instead of "die Frage", "Ihre Frage", and an inserted subject. Every
+# addition creates new variants, because German word order has no fixed form for this.
+#
+# One marker the model emits itself is exact, needs no second model to judge it, and
+# also lets a refusal suppress its own source list - which string matching could not do.
+REFUSAL_TOKEN = "[KEINE_ANTWORT]"
+REFUSAL_PATTERN = re.compile(r"^\s*\[\s*KEINE_ANTWORT\s*\]\s*", re.IGNORECASE)
 
 # Instructs the model to answer only from the retrieved context and to cite document and
 # page for every claim. The document matters: across fifteen documents "page 43" alone
@@ -35,8 +42,10 @@ Kontext enthalten ist, sage das explizit - erfinde nichts.
 - Belege jede inhaltliche Aussage mit Dokument und Seitenzahl in eckigen Klammern, \
 genau in der Form [dateiname.pdf, Seite 12]. Übernimm den Dateinamen unverändert so, \
 wie er im Kontext über dem jeweiligen Abschnitt steht.
-- Wenn der Kontext die gestellte Frage nicht beantwortet, sage das im ersten Satz. \
-Führe keine thematisch verwandten Angaben an, die eine andere Frage beantworten würden.
+- Wenn der Kontext die gestellte Frage nicht beantwortet, beginne deine Antwort mit \
+genau [KEINE_ANTWORT] und sage anschließend in einem Satz, dass der Kontext die Frage \
+nicht beantwortet. Führe dann keine Belegstellen an und keine thematisch verwandten \
+Angaben, die eine andere Frage beantworten würden.
 - Antworte auf Deutsch, klar und knapp.
 
 Kontext:
@@ -50,7 +59,7 @@ class RAGEngine:
         self,
         retriever: Retriever,
         openai_api_key: str | None = None,
-        model: str = DEFAULT_MODEL,
+        model: str = ANSWER_MODEL,
         temperature: float = 0.0,
         top_k: int = 5,
     ):
@@ -68,6 +77,11 @@ class RAGEngine:
 
         self.retriever = retriever
         self.top_k = top_k
+        # Display only. The model keeps citing filenames, because that is what appears
+        # in the context and what CITATION_PATTERN parses; titles are attached
+        # afterwards, where a reader sees them. Keeping the two apart means a change to
+        # how documents are named cannot break citation parsing.
+        self.titles = load_titles()
 
         self.llm = ChatOpenAI(api_key=api_key, model=model, temperature=temperature)
         self.prompt = ChatPromptTemplate.from_messages([
@@ -108,6 +122,16 @@ class RAGEngine:
             found.add((name, int(page)))
         return found
 
+    @staticmethod
+    def _split_refusal(answer: str) -> tuple[bool, str]:
+        """
+        Separate the refusal marker from the text shown to a reader.
+        returns: (refused, answer without the marker)
+        """
+        if REFUSAL_PATTERN.match(answer):
+            return True, REFUSAL_PATTERN.sub("", answer, count=1).strip()
+        return False, answer
+
     def build_sources(self, chunks: list[dict], answer: str | None = None) -> list[dict]:
         """
         Sources to display beneath an answer.
@@ -126,8 +150,13 @@ class RAGEngine:
         seen = {}
         for chunk in chunks:
             meta = chunk["metadata"]
-            key = (meta.get("source_file"), meta.get("page_number"))
-            seen[key] = {"source_file": meta.get("source_file"), "page_number": meta.get("page_number")}
+            source_file = meta.get("source_file")
+            key = (source_file, meta.get("page_number"))
+            seen[key] = {
+                "source_file": source_file,
+                "page_number": meta.get("page_number"),
+                "title": self.titles.get(source_file) or source_file,
+            }
 
         if answer is not None:
             cited = self._parse_citations(answer)
@@ -138,22 +167,30 @@ class RAGEngine:
     def answer(self, question: str) -> dict:
         """
         Run the full retrieve -> stuff -> generate pipeline for one question.
-        returns: {"answer": str, "sources": list[dict], "chunks": list[dict]}
+        returns: {"answer": str, "abstained": bool, "sources": list[dict], "chunks": list[dict]}
         """
         chunks = self.retrieve(question)
         if not chunks:
             return {
                 "answer": "Dazu habe ich keine relevanten Informationen in den Dokumenten gefunden.",
+                "abstained": True,
                 "sources": [],
                 "chunks": [],
             }
 
         context = self.build_context(chunks)
-        answer_text = self.chain.invoke({"context": context, "question": question})
+        raw = self.chain.invoke({"context": context, "question": question})
+        abstained, answer_text = self._split_refusal(raw)
 
+        # A refusal cites nothing, whatever the model wrote. Measured behaviour: asked
+        # about a topic outside the corpus, the model refused and appended five
+        # citations - which would render as "here is the answer, backed by five
+        # documents". The guarantee this system makes is that a listed source supports
+        # the answer, so it is enforced here rather than left to the model.
         return {
             "answer": answer_text,
-            "sources": self.build_sources(chunks, answer=answer_text),
+            "abstained": abstained,
+            "sources": [] if abstained else self.build_sources(chunks, answer=answer_text),
             "chunks": chunks,
         }
 

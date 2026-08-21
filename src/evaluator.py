@@ -23,15 +23,22 @@ from retriever import Retriever
 # Refusal phrases the answer prompt is instructed to produce. A refusal worded
 # differently is counted as an answer, so the abstention rate is pessimistic rather
 # than flattering.
-REFUSAL_MARKERS = (
-    "weiß ich nicht",
-    "keine relevanten informationen",
-    "nicht im kontext",
-    "nicht enthalten",
-    "keine informationen",
-    "lässt sich dem kontext nicht entnehmen",
-    "geht aus dem kontext nicht hervor",
-)
+# Abstention used to be detected by matching refusal phrases in the answer text. That
+# list is gone, and the reason is worth keeping, because the failure was invisible in
+# the number it produced:
+#
+#   7 phrases  -> measured 0.14   (2 of 14)
+#   11 phrases -> measured 0.57   (8 of 14)
+#   true value ->          1.00   (14 of 14, established by reading every answer)
+#
+# The misses were "diese Frage" for "die Frage", "Ihre Frage", a subject inserted before
+# the negation, and a reordered clause. German offers no fixed form for this sentence,
+# so each addition to the list created new ways to miss. Reported as 0.14, the system
+# would have looked like it invented answers to 86 % of questions it in fact refused.
+#
+# The model now marks its own refusals with a token that rag_engine strips before
+# display. Detection is an exact comparison, and the refusal can suppress its own source
+# list - which phrase matching could never do, because by then the answer was written.
 
 QUESTION_VARIANTS = {
     "colloquial": "question_colloquial",
@@ -157,16 +164,21 @@ class RetrievalEvaluator:
         This is the metric that matters most for a system whose selling point is refusing
         to invent: no retrieval metric can express it, because retrieval always returns
         its k nearest neighbours whether or not any of them is relevant.
+
+        Counts the engine's own refusal flag. A model that ignores the instruction and
+        refuses in prose is counted as having answered - pessimistic, but for a reason
+        that can be checked rather than a matter of phrasing, and answered_anyway holds
+        every such case for reading.
         """
         by_category: dict[str, list[float]] = {}
         answered_anyway = []
 
         for item in questions:
-            answer = engine.answer(item["question"])["answer"]
-            abstained = any(marker in answer.lower() for marker in REFUSAL_MARKERS)
+            result = engine.answer(item["question"])
+            abstained = result["abstained"]
             by_category.setdefault(item.get("category", "uncategorised"), []).append(float(abstained))
             if not abstained:
-                answered_anyway.append({"question": item["question"], "answer": answer[:300]})
+                answered_anyway.append({"question": item["question"], "answer": result["answer"][:300]})
 
         all_scores = [score for scores in by_category.values() for score in scores]
         return {
