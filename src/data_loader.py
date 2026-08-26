@@ -1,11 +1,6 @@
 """
-Extracts text and tables from PDFs with PyMuPDF.
-
-Page images were extracted here until it became clear they carried nothing: each one
-was stored with the placeholder text "[Complete page diagram page N]" and was reachable
-only through CLIP, which nothing queried. The figure captions - "Bild 2-1: Körperreaktion
-im Zeit-Stromdiagramm" and the like - are part of the page text and are indexed anyway,
-so removing the image branch cost no retrievable content and removed three dependencies.
+Why this file? PDFs in, text and table elements out. The one place raw PDF text enters
+the system, so cleaning happens here and everything downstream sees the same text.
 """
 from pathlib import Path
 
@@ -15,21 +10,13 @@ from data_cleaning import TextCleaner
 
 
 class PDFDocumentLoader:
-    """Turns a PDF into a flat list of text and table elements, page by page."""
 
     def __init__(self, cleaner: TextCleaner | None = None, drop_boilerplate: bool = True):
-        """
-        cleaner: Repairs typesetting artefacts. Applied here rather than further down
-            because this is the one place raw PDF text enters the system - everything
-            after it (chunking, token counts, embeddings, the lexical index, the gold
-            set and the quotes shown to a reader) then sees the same repaired text.
-        drop_boilerplate: Discard tables of contents, imprints and numbering blocks.
-        """
-        self.cleaner = cleaner or TextCleaner()
-        self.drop_boilerplate = drop_boilerplate
+        self.cleaner = cleaner or TextCleaner() # Repairs typesetting artefacts ----> data_cleaning
+        self.drop_boilerplate = drop_boilerplate # Drop tables of contents, imprints, numbering
 
     def _accept(self, text: str, element_type: str) -> str | None:
-        """Clean a block and return it, or None if it carries no content."""
+        """Clean a block, or return None if it carries no content."""
         cleaned = self.cleaner.clean(text)
         if not cleaned:
             return None
@@ -38,22 +25,16 @@ class PDFDocumentLoader:
         return cleaned
 
     def extract_pdf_elements(self, file_path: Path) -> list[dict]:
-        """
-        Extract every table and text block of a document, cleaned.
-        returns: Elements with type, text and page_number, in reading order
-        """
+        """Every table and text block of one document, cleaned, in reading order."""
         doc = fitz.open(file_path)
         processed_elements = []
 
         for page_num, page in enumerate(doc, start=1):
             table_rects = []
 
-            # Tables first, as markdown, so their structure survives into the chunk.
-            for tab in page.find_tables():
+            for tab in page.find_tables(): # Tables first, as markdown, so structure survives
                 text = self._accept(tab.to_markdown(), "Table")
-                # The rectangle is recorded even when the table itself is discarded, so
-                # its cells are not picked up again as loose text below.
-                table_rects.append(fitz.Rect(tab.bbox))
+                table_rects.append(fitz.Rect(tab.bbox)) # Recorded even if the table is dropped
                 if text:
                     processed_elements.append({
                         "type": "Table",
@@ -61,13 +42,10 @@ class PDFDocumentLoader:
                         "page_number": page_num,
                     })
 
-            # Then the text blocks, skipping any that sit inside a table already
-            # captured above - otherwise every table cell would be indexed twice, once
-            # as structured markdown and once as loose text.
             for block in page.get_text("blocks"):
                 block_rect = fitz.Rect(block[:4])
                 if any(block_rect.intersects(rect) for rect in table_rects):
-                    continue
+                    continue # Already captured as a table; otherwise every cell is indexed twice
                 text = self._accept(block[4], "NarrativeText")
                 if text:
                     processed_elements.append({
@@ -81,13 +59,13 @@ class PDFDocumentLoader:
 
     @staticmethod
     def categorize_elements(processed_elements: list[dict]) -> tuple[list[dict], list[dict]]:
-        """Split elements into text and tables."""
+        """Split elements into (texts, tables)."""
         texts = [el for el in processed_elements if el["type"] == "NarrativeText"]
         tables = [el for el in processed_elements if el["type"] == "Table"]
         return texts, tables
 
     def load_single_pdf(self, file_path: Path) -> dict:
-        """Load one PDF into the structure the preprocessor expects."""
+        """One PDF in the structure the preprocessor expects."""
         processed_elements = self.extract_pdf_elements(file_path)
         texts, tables = self.categorize_elements(processed_elements)
 
@@ -101,13 +79,10 @@ class PDFDocumentLoader:
         }
 
     def load_directory(self, dir_path: Path) -> list[dict]:
-        """
-        Load every PDF below a directory.
-
-        rglob descends into subdirectories, so anything left in a folder under data/
-        is indexed too - that has caused an unrelated corpus to be measured before.
-        """
+        """Load every PDF below a directory ----> build_index"""
         documents = []
+        # rglob descends into subdirectories - a stray folder under data/ gets indexed too,
+        # which has caused an unrelated corpus to be measured before.
         for pdf_file in sorted(dir_path.rglob("*.pdf")):
             if not pdf_file.name.startswith("."):
                 print(f"Processing: {pdf_file.name}")
