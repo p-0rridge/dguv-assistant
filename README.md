@@ -25,6 +25,73 @@ off-the-shelf chatbot and stopped using it because the answers drifted.
 Originally aimed at DIN VDE standards; those are copyrighted, so the project moved to the
 openly published DGUV rulebook covering the same domain.
 
+## What it looks like
+ 
+Three questions from `src/demo.py`, unedited. They correspond to the three
+requirements above, in order.
+ 
+**Several documents, one answer.**
+ 
+```
+> Wer darf ortsveränderliche elektrische Betriebsmittel prüfen?
+ 
+Ortsveränderliche elektrische Betriebsmittel dürfen von einer zur Prüfung
+befähigten Person geprüft werden; in den genannten Unterlagen wird dies als
+Elektrofachkraft beschrieben. Bei geeigneten Mess- und Prüfgeräten dürfen auch
+elektrotechnisch unterwiesene Personen unter Leitung und Aufsicht einer
+Elektrofachkraft prüfen. [203-004.pdf, Seite 23] [203-006.pdf, Seite 43]
+[i-8590.pdf, Seite 21]
+ 
+Sources
+  · DGUV Information 203-004 — Einsatz elektrischer Betriebsmittel bei
+    erhöhter elektrischer Gefährdung                            page 23
+  · DGUV Information 203-006 — Auswahl und Betrieb elektrischer Anlagen
+    und Betriebsmittel auf Bau- und Montagestellen              page 43
+  · DGUV Information 203-050 — Kommentar zur UVV Elektrische Anlagen
+    und Betriebsmittel                                          page 21
+```
+ 
+**A question the corpus cannot answer.** Five passages were retrieved. None
+supported an answer, so none is given — and the source list stays empty rather
+than lending the refusal a false citation.
+ 
+```
+> Welche Schutzmaßnahmen gelten, wenn bei Abbrucharbeiten Asbest gefunden wird?
+ 
+Der Kontext beantwortet die Frage nicht.
+ 
+Sources
+  none — the answer rests on no passage
+  retrieved but not used:
+    203-004.pdf p. 43 · i-8590.pdf p. 16 · i-8590.pdf p. 31
+    vorschrift3da.pdf p. 7 · vorschrift3da.pdf p. 20
+```
+ 
+**The hard case: adjacent and wrong.** The corpus specifies minimum
+cross-sections — for a *different* kind of conductor. Answering with those
+numbers would be confident, well-cited and wrong. The two are separated
+explicitly, in one answer.
+ 
+```
+> Welche Mindestquerschnitte für Schutzleiter legt DIN VDE 0100-540 fest?
+ 
+Für den Schutzpotentialausgleichsleiter zur Erdungsschiene nennt der Kontext
+als Mindestquerschnitte 6 mm² Kupfer, 16 mm² Aluminium oder 50 mm² Stahl; auf
+Baustellen soll unabhängig vom Material mindestens 16 mm² verwendet werden
+[203-006.pdf, Seite 18].
+ 
+Für Schutzleiter größer als 1,5 mm² ist im Kontext nur angegeben, dass der zu
+erwartende ohmsche Widerstand anhand einer Gleichung zu berechnen ist;
+konkrete Mindestquerschnitte für Schutzleiter nach DIN VDE 0100-540 werden im
+bereitgestellten Kontext nicht genannt [203-070.pdf, Seite 21].
+ 
+Sources
+  · DGUV Information 203-006 — Auswahl und Betrieb elektrischer Anlagen
+    und Betriebsmittel auf Bau- und Montagestellen              page 18
+  · DGUV Information 203-070 — Wiederkehrende Prüfungen ortsveränderlicher
+    elektrischer Betriebsmittel                                 page 21
+```
+
 ## Corpus
 
 15 documents, ~950 pages, 1,092 indexed passages — chosen to be hard rather than
