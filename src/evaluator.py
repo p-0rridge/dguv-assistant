@@ -1,15 +1,12 @@
 """
-Runs a retrieval variant against the gold set and reports what it found.
+Why this file? Runs one retrieval variant against the gold set and reports what it found.
 
-Each gold entry carries two questions about the same passage: one phrased colloquially,
-one naming the document designation and section. They are evaluated separately and
-never averaged together, because the difference between them is the actual subject of
-the experiment - a purely semantic retriever is expected to cope well with paraphrase
-and poorly with exact designations.
+The two question forms are scored separately and never averaged together, because the
+difference between them is the subject of the experiment: a purely semantic retriever
+copes with paraphrase and struggles with exact designations.
 
-One retrieval per question, at candidate_k depth. Recall at the smaller top_k is then
-read off the same ranked list rather than fetched again: retrieving twice would double
-the runtime and could only ever return a prefix of what was already there.
+One retrieval per question, at candidate_k depth. Recall at the smaller top_k is read
+off the same list rather than fetched again.
 """
 import json
 import statistics
@@ -20,26 +17,6 @@ from config import RetrievalConfig
 from metrics import hits_from_results, mean, ndcg_at_k, recall_at_k, reciprocal_rank
 from retriever import Retriever
 
-# Refusal phrases the answer prompt is instructed to produce. A refusal worded
-# differently is counted as an answer, so the abstention rate is pessimistic rather
-# than flattering.
-# Abstention used to be detected by matching refusal phrases in the answer text. That
-# list is gone, and the reason is worth keeping, because the failure was invisible in
-# the number it produced:
-#
-#   7 phrases  -> measured 0.14   (2 of 14)
-#   11 phrases -> measured 0.57   (8 of 14)
-#   true value ->          1.00   (14 of 14, established by reading every answer)
-#
-# The misses were "diese Frage" for "die Frage", "Ihre Frage", a subject inserted before
-# the negation, and a reordered clause. German offers no fixed form for this sentence,
-# so each addition to the list created new ways to miss. Reported as 0.14, the system
-# would have looked like it invented answers to 86 % of questions it in fact refused.
-#
-# The model now marks its own refusals with a token that rag_engine strips before
-# display. Detection is an exact comparison, and the refusal can suppress its own source
-# list - which phrase matching could never do, because by then the answer was written.
-
 QUESTION_VARIANTS = {
     "colloquial": "question_colloquial",
     "precise": "question_precise",
@@ -47,42 +24,29 @@ QUESTION_VARIANTS = {
 
 
 class RetrievalEvaluator:
-    """Measures one retrieval variant against the gold set."""
 
     def __init__(self, retriever: Retriever, config: RetrievalConfig):
-        """
-        retriever: The variant under test
-        config: The frozen settings this run is recorded against
-        """
         self.retriever = retriever
-        self.config = config
+        self.config = config # Frozen, so a result file traces back to exact settings
 
     @staticmethod
     def load_goldset(path: Path) -> list[dict]:
-        """Read the gold set produced by goldset_builder.py."""
         if not path.exists():
             raise FileNotFoundError(f"{path} not found. Run goldset_builder.py first.")
         with path.open(encoding="utf-8") as handle:
             return json.load(handle)
 
     def evaluate_variant(self, goldset: list[dict], variant: str) -> dict:
-        """
-        Score one question form across the whole gold set.
-        goldset: Gold entries
-        variant: Key of QUESTION_VARIANTS - "colloquial" or "precise"
-        returns: Metrics, timings, per-document recall and the list of misses
-        """
+        """Score one question form across the whole gold set."""
         field = QUESTION_VARIANTS[variant]
         top_k, candidate_k = self.config.top_k, self.config.candidate_k
 
         recall_top, recall_candidate, ranks, ndcgs, latencies = [], [], [], [], []
         per_document: dict[str, list[float]] = {}
         misses = []
-        # Per-question outcomes, kept so two runs can be compared question by question.
-        # An averaged recall cannot answer whether a difference between two variants is
-        # larger than chance: +7.8 points is five questions out of 64, and the interval
-        # around a single rate that size is wider than the difference itself. A paired
-        # test needs to know *which* questions moved, and only this list records that.
+        # Per-question outcomes, so two runs can be compared question by question. An
+        # averaged recall cannot say whether a difference exceeds chance; a paired test
+        # needs to know *which* questions moved ----> compare_runs
         per_question = []
 
         for position, entry in enumerate(goldset, start=1):
@@ -102,7 +66,7 @@ class RetrievalEvaluator:
             ndcgs.append(ndcg_at_k(hits, top_k))
             per_document.setdefault(entry["source_file"], []).append(hit_at_top)
 
-            rank = next((position for position, hit in enumerate(hits, start=1) if hit), None)
+            rank = next((r for r, hit in enumerate(hits, start=1) if hit), None)
             per_question.append({
                 "id": entry["id"],
                 f"hit_at_{top_k}": bool(hit_at_top),
@@ -136,7 +100,7 @@ class RetrievalEvaluator:
         }
 
     def evaluate(self, goldset: list[dict]) -> dict:
-        """Score every question form and return one result record for this config."""
+        """Score every question form, as one result record for this config."""
         return {
             "config": {
                 "name": self.config.name,
@@ -156,19 +120,15 @@ class RetrievalEvaluator:
     @staticmethod
     def evaluate_abstention(engine, questions: list[dict]) -> dict:
         """
-        Measure how often the system declines to answer questions the corpus cannot answer.
-        engine: A RAGEngine - this is the one measurement that needs answer generation
-        questions: Entries from unanswerable.json, each with question and category
-        returns: Overall and per-category abstention rate, plus the cases it answered anyway
+        How often the system declines questions the corpus cannot answer.
 
-        This is the metric that matters most for a system whose selling point is refusing
-        to invent: no retrieval metric can express it, because retrieval always returns
-        its k nearest neighbours whether or not any of them is relevant.
+        The metric that matters most for a system whose selling point is refusing to
+        invent - and one no retrieval metric can express, because retrieval always
+        returns its k nearest neighbours whether or not any of them is relevant.
 
-        Counts the engine's own refusal flag. A model that ignores the instruction and
-        refuses in prose is counted as having answered - pessimistic, but for a reason
-        that can be checked rather than a matter of phrasing, and answered_anyway holds
-        every such case for reading.
+        Counts the engine's own refusal flag rather than searching the text for refusal
+        phrases, which was tried and could not be made to work. A model that ignores the
+        instruction counts as having answered; answered_anyway keeps every such case.
         """
         by_category: dict[str, list[float]] = {}
         answered_anyway = []
@@ -189,7 +149,7 @@ class RetrievalEvaluator:
         }
 
     def report(self, results: dict) -> None:
-        """Print the result record as a markdown table, ready to paste into a write-up."""
+        """Print the result as a markdown table, ready to paste into a write-up."""
         top_k, candidate_k = self.config.top_k, self.config.candidate_k
         print(f"\n## {results['config']['name']}  ({results['goldset_size']} gold entries)\n")
         header = (
@@ -218,7 +178,7 @@ class RetrievalEvaluator:
 
     @staticmethod
     def save(results: dict, path: Path) -> None:
-        """Write the result record to disk so it stays comparable across days."""
+        """Write the record to disk so it stays comparable across days."""
         path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w", encoding="utf-8") as handle:
             json.dump(results, handle, ensure_ascii=False, indent=2)

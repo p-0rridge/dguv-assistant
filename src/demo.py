@@ -1,15 +1,15 @@
 """
-Runs a handful of questions through the full pipeline and prints the answers in a form
-that is readable on a slide or in a screenshot.
+Why this file? Runs prepared questions through the full pipeline and prints the answers
+readably, for a slide or a screenshot.
 
-The last question is deliberately unanswerable from this corpus: a system whose selling
-point is refusing to invent has to be shown refusing, not only answering.
+Two of them are deliberately unanswerable: a system whose selling point is refusing to
+invent has to be shown refusing, not only answering.
 
 Usage:
     python src/demo.py                     # the prepared questions
     python src/demo.py --then-ask          # prepared questions, then open for more
     python src/demo.py --ask               # straight to the prompt
-    python src/demo.py --config rerank     # better ranking, ~30 s per question
+    python src/demo.py --config rerank     # better ranking, far slower
 """
 import argparse
 import os
@@ -32,11 +32,10 @@ QUESTIONS = [
     "Wer darf ortsveränderliche elektrische Betriebsmittel prüfen?",
     "Wer darf elektrische Betriebsmittel instand setzen?",
     "In welchen Abständen sind ortsveränderliche elektrische Betriebsmittel zu prüfen?",
-    # Not answerable, and nothing in the corpus is even adjacent: a clean refusal.
+    # Nothing in the corpus is even adjacent: a clean refusal
     "Welche Schutzmaßnahmen gelten, wenn bei Abbrucharbeiten Asbest gefunden wird?",
-    # Not answerable either, but the corpus does contain cross-sections for a *different*
-    # kind of conductor. The near miss - right numbers, wrong question - is the failure
-    # mode that matters in a safety context.
+    # A near miss - the corpus holds cross-sections for a *different* kind of conductor.
+    # Right numbers, wrong question, which is the dangerous failure in a safety context.
     "Welche Mindestquerschnitte für Schutzleiter legt DIN VDE 0100-540 fest?",
 ]
 
@@ -54,8 +53,7 @@ def render(index: int, question: str, result: dict) -> str:
             lines.append(f"  · {source.get('title') or source['source_file']}")
             lines.append(f"      page {source['page_number']}  ({source['source_file']})")
     else:
-        # A refusal cites nothing, so it has no sources. Showing what was retrieved
-        # anyway would claim evidence the answer explicitly says it does not have.
+        # Listing what was retrieved anyway would claim evidence the answer says it lacks
         lines.append("  none - the answer rests on no passage")
         retrieved = sorted(
             {(c["metadata"].get("source_file"), c["metadata"].get("page_number")) for c in result["chunks"]}
@@ -69,9 +67,8 @@ def ask_loop(engine: RAGEngine) -> None:
     """
     Take questions from the keyboard until the user stops.
 
-    Kept in the same process as the loaded models on purpose: starting a fresh run costs
-    about half a minute of model loading, which is fine in a script and unusable in front
-    of an audience.
+    In the same process as the loaded models on purpose: a fresh run costs model-loading
+    time, which is fine in a script and unusable in front of an audience.
     """
     print("\n" + "=" * WIDTH)
     print("Ask a question. Empty line or Ctrl+C to quit.")

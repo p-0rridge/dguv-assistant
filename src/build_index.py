@@ -1,14 +1,13 @@
 """
-Single entry point for building the search index.
+Why this file? Single entry point for building the search index.
 
 Usage:
     python src/build_index.py                      # full corpus
     python src/build_index.py --corpus dev         # small corpus, for fast debugging
     python src/build_index.py --reset              # delete the store first, then rebuild
 
-Rebuilding is safe to repeat: chunk ids are content-derived and written with upsert,
-so a second run overwrites in place instead of duplicating. --reset is only needed when
-documents were removed from the corpus, since upsert never deletes anything.
+Repeating a run is safe: ids are content-derived and written with upsert. --reset is
+only needed after removing documents, since upsert never deletes anything.
 """
 import argparse
 import shutil
@@ -20,16 +19,11 @@ from data_preprocessing import MultiModalPreprocessor
 
 
 class IndexBuilder:
-    """Loads a corpus, chunks and embeds it, writes it to the vector store and to JSON."""
 
     def __init__(self, corpus: str = "full", reset: bool = False):
-        """
-        corpus: "full" for the evaluation corpus, "dev" for the small debugging corpus
-        reset: Delete the vector store before building, for a guaranteed clean state
-        """
         self.corpus = corpus
         self.data_dir, self.chroma_dir = config.corpus_paths(corpus)
-        # Separate output files so a quick dev run can never overwrite the chunks the
+        # Separate output files, so a dev run can never overwrite the chunks the
         # evaluation questions were generated from.
         self.chunks_file = (
             config.CHUNKS_FILE if corpus == "full"
@@ -64,13 +58,11 @@ class IndexBuilder:
 
     def report(self, chunks: list[dict]) -> None:
         """
-        Print a per-document breakdown of the index.
+        Per-document breakdown of the index.
 
-        The median token count per chunk is the interesting column: chunking is supposed
-        to break at section headings, so a healthy document produces chunks of varying,
-        mostly moderate length. A median sitting close to max_text_chunk_tokens means no
-        headings were recognised and the text was only ever cut when the token budget ran
-        out - which is a chunking failure, not a property of the document.
+        The median token count is the column to read: a median close to the cap means
+        no headings were recognised and text was only ever cut when the budget ran out,
+        which is a chunking failure rather than a property of the document.
         """
         encoder = self.preprocessor.token_encoder
         cap = self.preprocessor.max_text_chunk_tokens

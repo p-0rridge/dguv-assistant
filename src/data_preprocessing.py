@@ -1,3 +1,8 @@
+"""
+Why this file? Turns extracted elements into chunks, embeds them with BGE-M3 and writes
+them to the local vector store. Also exports chunks.json, which everything downstream
+reads: the gold set, the lexical index and any inspection of the chunking.
+"""
 import hashlib
 import json
 import re
@@ -8,16 +13,10 @@ import tiktoken
 import torch
 from sentence_transformers import SentenceTransformer
 
-# The image branch was removed here. Page screenshots were extracted, embedded with
-# CLIP and stored in a second collection that nothing ever queried; their text was the
-# placeholder "[Complete page diagram page N]", so they were not reachable by a text
-# search either. Figure captions are part of the page text and stay indexed. Dropping
-# it removed open_clip, torchvision and PIL from the project.
-
 from data_loader import PDFDocumentLoader
 
-# Matches the German norm's section/annex numbering (e.g. "6.4.3.7", "B.3", "Anhang C", "Tabelle 6.1")
-# so text chunking can break at structural boundaries instead of at an arbitrary character count.
+# German section and annex numbering ("6.4.3.7", "B.3", "Anhang C", "Tabelle 6.1"), so
+# chunks break at structural boundaries instead of at an arbitrary character count.
 SECTION_HEADING_PATTERN = re.compile(
     r"^\s*(\d+(\.\d+){1,4}\b|[A-Z]\.\d+(\.\d+)*\b|Anhang\s+\S+|Tabelle\s+\S+|Bild\s+\S+)"
 )
@@ -27,90 +26,60 @@ class MultiModalPreprocessor:
 
     def __init__(
         self,
-        persist_dir: Path,
+        persist_dir: Path, # Local folder ChromaDB writes to. No server, no network port
         text_collection_name: str = "text_chunks",
         bge_model_name: str = "BAAI/bge-m3",
-        max_text_chunk_tokens: int = 600,
-        min_chunk_chars: int = 300,
-        embed_batch_size: int = 16,
+        max_text_chunk_tokens: int = 600, # Upper bound per chunk
+        min_chunk_chars: int = 300, # Below this a chunk is a fragment and gets merged
+        embed_batch_size: int = 16, # Chunks per forward pass; batching only affects speed
     ):
         """
         Chunk extracted PDF elements and embed them with BGE-M3.
-        persist_dir: Local folder ChromaDB writes to. No server, no network port.
-        embed_batch_size: Chunks per forward pass. Batching is the cheapest speedup for
-            a full re-index and changes nothing about the resulting vectors.
 
-        BGE-M3 rather than a shared text/image model: CLIP's ~77-token limit is far too
-        small for structured legal text, while BGE-M3 handles 8192 - so chunking can
-        follow document structure instead of the embedding model's limit.
+        BGE-M3 rather than a shared text/image model: its 8192-token context lets
+        chunking follow document structure instead of the model's limit.
         """
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.max_text_chunk_tokens = max_text_chunk_tokens
-        # 31 % of the chunks in the previous index were shorter than this and 9 % were
-        # under 50 characters - fragments that occupy a place in the top five without
-        # being able to answer anything. The same threshold is what goldset_builder
-        # already used to decide a passage was too short to ask a question about.
         self.min_chunk_chars = min_chunk_chars
         self.embed_batch_size = embed_batch_size
 
-        # Token counting for chunk sizing. This is a fast, good-enough estimate; it is not
-        # BGE-M3's own tokenizer, but close enough to size chunks safely under its 8192-token limit.
+        # Not BGE-M3's own tokenizer, but close enough to size chunks under its limit.
         self.token_encoder = tiktoken.get_encoding("cl100k_base")
 
-        # --- Text/table embedding model (BGE-M3) ---
         self.bge_model = SentenceTransformer(bge_model_name, device=self.device)
-        # BGE-M3 ships with an 8192-token context; make sure sentence-transformers
-        # actually uses it instead of falling back to a shorter default.
-        self.bge_model.max_seq_length = 8192
-        # get_embedding_dimension() is the current sentence-transformers API name;
-        # fall back to the older get_sentence_embedding_dimension() on older versions.
+        self.bge_model.max_seq_length = 8192 # Or sentence-transformers falls back to less
         if hasattr(self.bge_model, "get_embedding_dimension"):
             self.text_embedding_dim = self.bge_model.get_embedding_dimension()
-        else:
+        else: # Older sentence-transformers
             self.text_embedding_dim = self.bge_model.get_sentence_embedding_dimension()
 
-        # --- Local, server-less vector store ---
-        # hnsw:space="cosine" is set explicitly: Chroma otherwise defaults to squared L2.
-        # With normalised embeddings both produce the same *ranking*, but only cosine
-        # distance is interpretable as a number - and readable scores are needed later to
-        # set an abstention threshold ("say I don't know below X").
-        # NOTE: this metadata is only applied when the collection is first created. An
-        # existing collection keeps whatever space it was built with, so switching this
-        # requires deleting persist_dir and re-indexing.
+        # hnsw:space="cosine" set explicitly - Chroma defaults to squared L2. With
+        # normalised embeddings the ranking is the same either way, but only cosine
+        # distance is readable as a number, which an abstention threshold would need.
+        # Applied only when the collection is created; changing it means re-indexing.
         client = chromadb.PersistentClient(path=str(persist_dir))
         self.text_collection = client.get_or_create_collection(
             name=text_collection_name, metadata={"hnsw:space": "cosine"}
         )
 
     def _count_tokens(self, text: str) -> int:
-        """Estimate the token count of a text string."""
         return len(self.token_encoder.encode(text))
 
     @staticmethod
     def make_chunk_id(chunk: dict) -> str:
         """
-        Build a stable, content-derived id for a chunk.
-        chunk: A chunk dict that already carries source_file, page_number, type and text
-        returns: 16-character hex digest
+        Stable id derived from the chunk's own content, not a uuid.
 
-        Why content-derived instead of uuid4: the id has to be the same on every run.
-        That makes indexing idempotent (re-running never duplicates a chunk), lets the
-        dense and the lexical retriever refer to the same chunk by the same key when
-        their result lists are fused, and keeps evaluation runs comparable across days.
-
-        Two chunks colliding on this id means identical text on the same page of the
-        same document - a genuine duplicate, which should collapse into one entry.
+        Makes indexing idempotent, lets the dense and lexical retrievers refer to the
+        same chunk by the same key, and keeps evaluation runs comparable across days.
+        A collision means identical text on the same page - a genuine duplicate.
         """
         raw = f"{chunk['source_file']}|{chunk['page_number']}|{chunk['type']}|{chunk['text']}"
         return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16]
 
     def chunk_text_elements(self, texts: list[dict]) -> list[dict]:
-        """
-        Group narrative text elements into chunks, breaking at section headings and
-        never exceeding max_text_chunk_tokens.
-        texts: List of NarrativeText element dicts, as returned by categorize_elements
-        returns: List of chunk dicts with keys type, text, page_number
-        """
+        """Group text elements into chunks, breaking at section headings."""
         chunks = []
         buffer_texts = []
         buffer_tokens = 0
@@ -129,11 +98,8 @@ class MultiModalPreprocessor:
             el_tokens = self._count_tokens(el_text)
             is_new_section = bool(SECTION_HEADING_PATTERN.match(el_text))
 
-            # Start a new chunk if this element opens a new section, or the buffer
-            # would otherwise exceed the target token budget. A heading only breaks
-            # once the buffer holds enough to stand on its own: without that condition,
-            # a run of consecutive headings produces a chunk per heading, each too
-            # short to answer anything and each competing for a place in the top five.
+            # A heading only breaks once the buffer can stand on its own - otherwise a
+            # run of consecutive headings produces one useless chunk each.
             buffer_length = sum(len(text) for text in buffer_texts)
             would_overflow = buffer_tokens + el_tokens > self.max_text_chunk_tokens
             breaks_here = would_overflow or (is_new_section and buffer_length >= self.min_chunk_chars)
@@ -145,10 +111,8 @@ class MultiModalPreprocessor:
             buffer_tokens += el_tokens
             buffer_page = buffer_page or el["page_number"]
 
-            # A single element longer than the budget still becomes its own chunk
-            # (never split mid-element), and is flushed immediately.
             if buffer_tokens > self.max_text_chunk_tokens:
-                flush_buffer()
+                flush_buffer() # An oversized element becomes its own chunk, never split
                 buffer_texts, buffer_tokens, buffer_page = [], 0, None
 
         flush_buffer()
@@ -156,12 +120,10 @@ class MultiModalPreprocessor:
 
     def _merge_short_chunks(self, chunks: list[dict]) -> list[dict]:
         """
-        Fold chunks below min_chunk_chars into the one that follows them.
+        Fold fragments into the chunk that follows them.
 
-        Forward rather than backward: a fragment is almost always a heading or an
-        introductory line, which belongs to the section it opens, not to the one that
-        just ended. The merged chunk keeps the earlier page number, so a citation
-        points at where the passage starts.
+        Forward, not backward: a fragment is usually a heading, which belongs to the
+        section it opens. The merged chunk keeps the earlier page number.
         """
         merged: list[dict] = []
         pending: dict | None = None
@@ -179,9 +141,7 @@ class MultiModalPreprocessor:
                 continue
             merged.append(chunk)
 
-        # A trailing fragment has nothing to merge into; it joins the previous chunk
-        # rather than being dropped, since discarding text is not this method's job.
-        if pending:
+        if pending: # Nothing follows it, so it joins the previous chunk rather than vanishing
             if merged:
                 merged[-1]["text"] += f"\n\n{pending['text']}"
             else:
@@ -189,46 +149,32 @@ class MultiModalPreprocessor:
         return merged
 
     def chunk_tables(self, tables: list[dict]) -> list[dict]:
-        """Each table becomes its own chunk; tables are never merged with surrounding text."""
+        """One chunk per table; tables are never merged with surrounding text."""
         return [
             {"type": "Table", "text": el["text"], "page_number": el["page_number"]}
             for el in tables
         ]
 
     def build_chunks(self, document: dict) -> list[dict]:
-        """
-        Build the full set of chunks for a single loaded document.
-        document: A dict as returned by PDFDocumentLoader.load_single_pdf
-        returns: Chunk dicts tagged with source_file and chunk_id
-        """
+        """All chunks for one loaded document, tagged with source_file and chunk_id."""
         chunks = (
             self.chunk_text_elements(document["texts"])
             + self.chunk_tables(document["tables"])
         )
         for chunk in chunks:
             chunk["source_file"] = document["file_name"]
-            # Assigned here, once, so every downstream consumer (vector store, exported
-            # JSON, lexical index, evaluation) refers to a chunk by the same key.
-            chunk["chunk_id"] = self.make_chunk_id(chunk)
+            chunk["chunk_id"] = self.make_chunk_id(chunk) # Assigned once, used everywhere
         return chunks
 
     def embed_text(self, text: str, is_query: bool = False) -> list[float]:
-        """
-        Embed a single text string with BGE-M3.
-        is_query: BGE-M3's retrieval quality improves slightly when queries carry a short
-            instruction prefix; passages (the chunks we index) are embedded as-is.
-        """
+        """Embed one string. Queries get BGE-M3's instruction prefix, passages do not."""
         if is_query:
             text = f"Represent this sentence for searching relevant passages: {text}"
         embedding = self.bge_model.encode(text, normalize_embeddings=True)
         return embedding.tolist()
 
     def embed_texts(self, texts: list[str]) -> list[list[float]]:
-        """
-        Embed many passages in batches. Identical output to calling embed_text in a loop,
-        but several times faster on CPU because the model processes embed_batch_size
-        chunks per forward pass instead of one.
-        """
+        """Embed many passages in batches. Same vectors as embed_text, much faster."""
         embeddings = self.bge_model.encode(
             texts,
             batch_size=self.embed_batch_size,
@@ -238,10 +184,7 @@ class MultiModalPreprocessor:
         return [vector.tolist() for vector in embeddings]
 
     def generate_embeddings(self, chunks: list[dict]) -> list[dict]:
-        """
-        Attach a BGE-M3 embedding to every chunk.
-        returns: The same list, with an added "embedding" key per chunk
-        """
+        """Attach an embedding to every chunk."""
         if chunks:
             vectors = self.embed_texts([c["text"] for c in chunks])
             for chunk, vector in zip(chunks, vectors):
@@ -250,13 +193,11 @@ class MultiModalPreprocessor:
 
     def add_to_vectorstore(self, chunks: list[dict]) -> None:
         """
-        Write embedded chunks into the local ChromaDB collections, keyed by chunk_id.
-        chunks: List of chunk dicts, as returned by generate_embeddings
+        Write embedded chunks to ChromaDB, keyed by chunk_id.
 
-        Uses upsert() rather than add(): with content-derived ids, re-running the whole
-        pipeline overwrites each chunk in place instead of inserting a second copy. With
-        add() plus random ids, every re-run silently doubled the collection - which
-        quietly changes what "top 5 results" means and makes measurements incomparable.
+        upsert() rather than add(): with content-derived ids a re-run overwrites each
+        chunk in place. add() plus random ids silently doubled the collection on every
+        run, which changes what "top 5" means and makes measurements incomparable.
         """
         text_chunks = self._deduplicate(chunks)
         if not text_chunks:
@@ -279,14 +220,14 @@ class MultiModalPreprocessor:
 
     @staticmethod
     def _deduplicate(chunks: list[dict]) -> list[dict]:
-        """Drop chunks sharing a chunk_id, so one upsert call never carries the same id twice."""
+        """One upsert call must never carry the same id twice."""
         seen = {}
         for chunk in chunks:
             seen.setdefault(chunk["chunk_id"], chunk)
         return list(seen.values())
 
     def process_document(self, document: dict) -> list[dict]:
-        """Run the full chunking + embedding + indexing pipeline for one loaded document."""
+        """Chunk, embed and index one loaded document."""
         chunks = self.build_chunks(document)
         chunks = self.generate_embeddings(chunks)
         self.add_to_vectorstore(chunks)
@@ -295,14 +236,10 @@ class MultiModalPreprocessor:
     @staticmethod
     def export_chunks(chunks: list[dict], path: Path) -> None:
         """
-        Write all chunks to a JSON file, without their embeddings.
-        chunks: List of chunk dicts
-        path: Destination file, created together with any missing parent folders
+        Write chunks to JSON without their embeddings ----> goldset_builder, hybrid_search
 
-        This file is the shared source of truth for everything that follows: the
-        evaluation questions are generated from it, the lexical index is built from it,
-        and chunking changes can be inspected by diffing it - none of which requires
-        re-running the slow PDF-and-embedding pipeline.
+        The shared source of truth for everything after indexing, so none of it has to
+        re-run the slow PDF-and-embedding pipeline.
         """
         path.parent.mkdir(parents=True, exist_ok=True)
         serialisable = [{k: v for k, v in chunk.items() if k != "embedding"} for chunk in chunks]
@@ -311,15 +248,10 @@ class MultiModalPreprocessor:
 
     def search_text(self, query: str, k: int = 5) -> list[dict]:
         """
-        Dense semantic search over the text collection.
-        query: Natural-language search query
-        k: Number of results to return
-        returns: List of dicts with keys chunk_id, text, metadata, score - ordered best first
+        Dense semantic search ----> DenseRetriever
+        returns: chunk_id, text, metadata, score - best first
 
-        score is a cosine similarity in [0, 1] (1 = identical direction), derived from the
-        cosine distance Chroma returns. It is reported here because later stages need it:
-        the fusion step needs a per-retriever ranking, and the abstention rule needs a
-        number it can threshold.
+        score is cosine similarity in [0, 1], derived from the distance Chroma returns.
         """
         query_embedding = self.embed_text(query, is_query=True)
         results = self.text_collection.query(
@@ -344,8 +276,7 @@ class MultiModalPreprocessor:
 
 
 if __name__ == "__main__":
-    # Kept only as a smoke test for this module. The real pipeline entry point is
-    # build_index.py, which also writes artifacts/chunks.json.
+    # Smoke test only. The real entry point is build_index.py, which also exports chunks.json.
     BASE_DIR = Path(__file__).resolve().parent.parent
 
     loader = PDFDocumentLoader()

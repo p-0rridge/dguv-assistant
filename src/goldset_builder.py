@@ -1,19 +1,21 @@
 """
-Builds the evaluation gold set by reversing the retrieval task: a known passage is
-given to a model, which writes the question it answers, so the correct location is
-known by construction. Each passage yields two questions - one colloquial, one naming
-the document designation - plus a verbatim snippet used both as the answer key and as
-a check that the model did not invent its evidence.
+Why this file? Measuring retrieval needs a known-correct passage per question, and
+finding those by hand across the corpus would take days. So the task is reversed: give
+a model a passage whose location is known and have it write the question - the answer
+is then correct by construction.
 
-The gold label is source_file + page_number + snippet, never the chunk_id, so the same
-gold set survives a change to the chunking strategy.
+Each passage yields a colloquial question, a precise one naming the DGUV designation,
+and a verbatim snippet that serves as the answer key and as proof the model did not
+invent its evidence.
 
-Rationale and known limitations: presentation/baseline_results.md
-Cost: one API call per selected chunk (~75 by default).
+The gold label is source_file + page_number + snippet, never the chunk_id, so one gold
+set survives a change of chunking.
+
+Costs one API call per selected chunk.
 
 Usage:
     python src/goldset_builder.py
-    python src/goldset_builder.py --per-document 3
+    python src/goldset_builder.py --extend --per-document 6
 """
 import argparse
 import json
@@ -79,22 +81,11 @@ class GoldsetBuilder:
     def __init__(
         self,
         model: str = GOLDSET_MODEL,
-        openai_api_key: str | None = None,
-        per_document: int = 5,
-        min_chars: int = 300,
-        seed: int = 42,
+        openai_api_key: str | None = None, # Falls back to the OPENAI_API_KEY variable
+        per_document: int = 5, # Per document, so the longest one cannot dominate the set
+        min_chars: int = 300, # Below this a chunk is a heading, and unanswerable
+        seed: int = 42, # Fixed, so the same corpus produces the same sample
     ):
-        """
-        model: OpenAI chat model used to generate the questions
-        openai_api_key: Falls back to the OPENAI_API_KEY environment variable
-        per_document: How many chunks to sample from each document. Sampling per
-            document rather than across the whole corpus keeps a 132-page document from
-            dominating the gold set, which would turn the evaluation into a measurement
-            of how well that single document is found.
-        min_chars: Shortest chunk still considered usable. Below this a chunk is usually
-            a heading or a fragment, and any question about it would be unanswerable.
-        seed: Fixes the sampling so the same corpus always produces the same gold set
-        """
         api_key = openai_api_key or os.getenv("OPENAI_API_KEY")
         if not api_key:
             raise ValueError(
@@ -116,11 +107,7 @@ class GoldsetBuilder:
             return json.load(handle)
 
     def is_usable(self, chunk: dict) -> bool:
-        """
-        Decide whether a chunk can carry an answerable question.
-        Filters out images (no text to ask about), fragments, and table-of-contents or
-        index pages, which are full of headings but contain no statements.
-        """
+        """Can this chunk carry an answerable question? Filters fragments and index pages."""
         if chunk["type"] not in ("NarrativeText", "Table"):
             return False
         text = chunk["text"]
@@ -128,16 +115,13 @@ class GoldsetBuilder:
             return False
         if TOC_PATTERN.search(text):
             return False
-        # A chunk that is mostly digits and punctuation is a table of contents, a page
-        # index or a numbering block rather than prose.
         letters = sum(character.isalpha() for character in text)
-        return letters / len(text) > 0.55
+        return letters / len(text) > 0.55 # Mostly digits means numbering, not prose
 
     def select_chunks(self, chunks: list[dict], exclude: set[str] = frozenset()) -> list[dict]:
         """
-        Pick a stratified sample: up to per_document usable chunks from each document.
-        exclude: chunk ids already in the gold set, so an extension adds new passages
-            instead of resampling the old ones.
+        A stratified sample: up to per_document usable chunks from each document.
+        exclude: ids already in the gold set, so an extension adds rather than resamples.
         """
         by_document: dict[str, list[dict]] = {}
         for chunk in chunks:
@@ -156,10 +140,7 @@ class GoldsetBuilder:
 
     @staticmethod
     def _parse_response(raw: str) -> dict:
-        """
-        Turn the model's reply into a dict, tolerating a markdown code fence around it.
-        Raises ValueError if the reply is not usable JSON, so the caller can skip it.
-        """
+        """The model's reply as a dict, tolerating a markdown fence. Raises on bad JSON."""
         text = raw.strip()
         if text.startswith("```"):
             text = re.sub(r"^```(?:json)?\s*|\s*```$", "", text)
@@ -172,13 +153,9 @@ class GoldsetBuilder:
         return parsed
 
     def generate_entry(self, chunk: dict, entry_id: str) -> dict | None:
-        """
-        Produce one gold-set entry for a chunk, or None if generation or validation failed.
-        chunk: A usable chunk dict from chunks.json
-        entry_id: Identifier written into the entry
-        """
-        # The page number is deliberately not passed to the model: it must not be able
-        # to name the answer's location in the question it writes.
+        """One gold entry, or None if generation or validation failed."""
+        # The page number is deliberately withheld from the model, so it cannot name the
+        # answer's location in the question it writes.
         prompt = GENERATION_PROMPT.format(
             source_file=chunk["source_file"],
             chunk_text=chunk["text"],
@@ -210,13 +187,12 @@ class GoldsetBuilder:
     @staticmethod
     def validate(entry: dict, chunk: dict) -> str | None:
         """
-        Check one generated entry, returning a reason string if it must be discarded.
+        A reason to discard the entry, or None.
 
-        The snippet check is the important one: it has to occur verbatim in the chunk.
-        If it does not, the model paraphrased or invented the evidence, and the entry
-        would silently weaken every measurement built on it. Comparison runs through the
-        same normalisation the evaluation uses, so whitespace differences are tolerated
-        but wording differences are not.
+        The snippet check is the important one: it must occur verbatim in the chunk, or
+        the model paraphrased its evidence and the entry would silently weaken every
+        measurement built on it. Compared through the same normalisation the evaluation
+        uses, so presentation differs freely and wording does not.
         """
         if not entry["question_colloquial"] or not entry["question_precise"]:
             return "missing question"
@@ -234,13 +210,10 @@ class GoldsetBuilder:
         """
         Run the whole process and write the gold set to disk.
 
-        extend: keep the existing entries and add new ones for passages not yet used.
-            Adding rather than regenerating is what keeps earlier measurements
-            comparable - a regenerated set would be a different test, and every number
-            recorded against the old one would have to be thrown away. It also matters
-            for the reason the set is being extended at all: below roughly six
-            disagreeing questions no paired comparison can reach significance however
-            clean the result, so the set has to grow rather than change.
+        extend: keep the existing entries and add new ones for unused passages. Adding
+            rather than regenerating keeps earlier measurements comparable - a
+            regenerated set is a different test, and every number recorded against the
+            old one would have to be thrown away.
         """
         chunks = self.load_chunks(chunks_file)
         print(f"Loaded {len(chunks)} chunks from {chunks_file}")

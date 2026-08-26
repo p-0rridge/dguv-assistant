@@ -1,11 +1,11 @@
 """
-Compares two evaluation runs question by question.
+Why this file? An averaged recall cannot say whether a difference exceeds chance: a few
+points is a handful of questions, and the interval around a single rate that size is
+wider than the difference itself.
 
-An averaged recall cannot say whether a difference is larger than chance. With 64
-questions per form, +7.8 points is five questions, and the confidence interval around a
-single rate that size is wider than the difference. Since both variants answer the same
-questions, the comparison is paired - which allows a far more sensitive test than
-comparing two rates: only the questions where the two disagree carry information.
+Both variants answer the same questions, so the comparison is paired - a far more
+sensitive test than comparing two rates, because only the questions where they disagree
+carry information.
 
 McNemar's exact test, computed from the binomial distribution rather than imported, so
 the arithmetic is visible and the project keeps one dependency fewer.
@@ -40,12 +40,11 @@ def hits_by_id(variant: dict, key: str) -> dict[str, bool]:
 
 def mcnemar(before: dict[str, bool], after: dict[str, bool]) -> dict:
     """
-    Paired comparison of two binary outcomes over the same questions.
+    Paired comparison of two binary outcomes.
+    returns: the two discordant counts and the two-sided exact p-value
 
-    Returns the two discordant counts and the two-sided exact p-value. Questions both
-    variants get right, or both get wrong, carry no information about which is better
-    and are excluded - that exclusion is what makes the test sensitive at this sample
-    size.
+    Questions both variants get right, or both get wrong, say nothing about which is
+    better and are excluded - that exclusion is what makes the test sensitive here.
     """
     shared = sorted(set(before) & set(after))
     fixed = sum(1 for i in shared if not before[i] and after[i])
