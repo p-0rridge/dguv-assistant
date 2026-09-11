@@ -98,9 +98,6 @@ Sources
 convenient: 203-070, -071 and -072 all cover recurring inspections. If ranking matters
 anywhere, it matters between documents a reader would confuse.
 
-The PDFs aren't in this repo. They're freely downloadable from
-[publikationen.dguv.de](https://publikationen.dguv.de) — redistribution is another matter.
-
 ### Sources and terms of use
 
 The corpus documents are not part of this repository. They are published by
@@ -118,7 +115,7 @@ DGUV's terms of use distinguish two categories, and so does this project:
 
 This repository contains source code and evaluation artefacts only. It ships
 no DGUV documents, offers no downloads, and is not deployed as a public
-service. The corpus described below was processed locally, for a
+service. The corpus described above was processed locally, for a
 non-commercial study project.
 
 Any public deployment of this system will either run on DGUV Vorschriften
@@ -324,8 +321,9 @@ corpora and the fusion between them would mean nothing.
       element, so a passage continuing onto the next page is cited one page early. In a
       system whose promise is verifiability, this is the most expensive open bug.
 - [ ] **Deploy.** Now realistic: the shipping configuration answers in 0.3 s and needs no
-      cross-encoder. Blocked on a question rather than on effort — serving passages from
-      these documents publicly is redistribution, and that needs deciding, not assuming.
+      cross-encoder. The open question was never effort but permission (see *Sources and
+      terms of use*): the public version will run on DGUV Vorschriften, which are official
+      works, or on documents the user supplies. A clarification request to DGUV is pending.
 - [ ] **Measure multi-source answers.** Requirement 2 holds in practice, but each gold
       entry has one correct location, so no metric captures it.
 - [ ] **Grow the gold set past 136.** Effects smaller than about six questions remain
