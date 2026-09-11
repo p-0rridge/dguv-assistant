@@ -101,6 +101,30 @@ anywhere, it matters between documents a reader would confuse.
 The PDFs aren't in this repo. They're freely downloadable from
 [publikationen.dguv.de](https://publikationen.dguv.de) — redistribution is another matter.
 
+### Sources and terms of use
+
+The corpus documents are not part of this repository. They are published by
+the Deutsche Gesetzliche Unfallversicherung (DGUV) and can be downloaded free
+of charge from publikationen.dguv.de.
+
+DGUV's terms of use distinguish two categories, and so does this project:
+
+- **DGUV Vorschriften** are accident-prevention regulations and therefore
+  official works (amtliche Werke) under § 5 UrhG. They carry no copyright
+  protection, and DGUV's terms state explicitly that their text may be copied.
+- **DGUV Regeln and DGUV Informationen** are copyrighted, and DGUV reserves
+  text and data mining rights under § 44 b (3) UrhG, including use by
+  AI systems.
+
+This repository contains source code and evaluation artefacts only. It ships
+no DGUV documents, offers no downloads, and is not deployed as a public
+service. The corpus described below was processed locally, for a
+non-commercial study project.
+
+Any public deployment of this system will either run on DGUV Vorschriften
+only, or let users supply their own documents. A request for clarification
+has been sent to DGUV; this section will be updated with their answer.
+
 ## Pipeline
 
 ```
